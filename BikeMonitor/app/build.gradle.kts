@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -50,5 +49,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-analytics")
-
+    implementation("com.android.support:support-v4:23.2.1")
+    implementation("com.google.android.material:material:1.2.0")
+    implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
 }
