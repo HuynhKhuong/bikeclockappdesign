@@ -74,7 +74,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Forgot Password?"
                 android:textColor="@color/primaryTextColor"
-                android:textSize="@dimen/newsMoreTextSize" />x
+                android:textSize="@dimen/newsMoreTextSize" />
 
             <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/cirLoginButton"
@@ -145,6 +145,12 @@
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_google_plus" />
             </LinearLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragmentContainerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:navGraph="@navigation/mobile_navigation" />
 
         </LinearLayout>
     </ScrollView>

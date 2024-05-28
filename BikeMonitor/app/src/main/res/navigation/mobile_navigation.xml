@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/fragmentContainerView">
 
     <fragment
         android:id="@+id/nav_home"
@@ -22,4 +22,33 @@
         android:name="com.example.bikemonitor.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.example.bikemonitor.ui.register.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_nav_register_to_nav_content_main"
+            app:destination="@id/nav_content_main" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragmentContainerView"
+        android:name="com.example.bikemonitor.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_fragmentContainerView_to_nav_register"
+            app:destination="@id/nav_register" />
+        <action
+            android:id="@+id/action_fragmentContainerView_to_nav_content_main"
+            app:destination="@id/nav_content_main" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_content_main"
+        android:label="Register"
+        tools:layout="@layout/content_main" />
+
 </navigation>

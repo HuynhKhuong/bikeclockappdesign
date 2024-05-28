@@ -15,12 +15,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
-import com.example.bikemonitor.databinding.ActivityLoginBinding;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private ActivityLoginBinding loginPageBinging;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +48,11 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
                 .setOpenableLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+
+         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavController navController = Navigation.findNavController(this, R.id.fragmentContainerView);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
