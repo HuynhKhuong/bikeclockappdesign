@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/fragmentContainerView">
+    app:startDestination="@id/nav_login">
 
     <fragment
         android:id="@+id/nav_home"
@@ -24,31 +24,32 @@
         tools:layout="@layout/fragment_slideshow" />
 
     <fragment
-        android:id="@+id/nav_register"
-        android:name="com.example.bikemonitor.ui.register.RegisterFragment"
-        android:label="Register"
-        tools:layout="@layout/fragment_register" >
-        <action
-            android:id="@+id/action_nav_register_to_nav_content_main"
-            app:destination="@id/nav_content_main" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/fragmentContainerView"
+        android:id="@+id/nav_login"
         android:name="com.example.bikemonitor.ui.login.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_fragmentContainerView_to_nav_register"
+            android:id="@+id/action_nav_login_to_nav_register"
             app:destination="@id/nav_register" />
         <action
-            android:id="@+id/action_fragmentContainerView_to_nav_content_main"
+            android:id="@+id/action_nav_login_to_nav_content_main"
             app:destination="@id/nav_content_main" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_content_main"
-        android:label="Register"
+        android:name="com.example.bikemonitor.ui.maincontent.ContentMain"
+        android:label="Main"
         tools:layout="@layout/content_main" />
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.example.bikemonitor.ui.register.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_nav_register_to_nav_content_main"
+            app:destination="@id/nav_content_main" />
+    </fragment>
 
 </navigation>

@@ -8,7 +8,7 @@
     android:background="@color/login_bk_color"
     android:focusableInTouchMode="true"
     android:gravity="center"
-    tools:context="com.appsnipp.modernlogin.LoginActivity">
+    tools:context="com.example.bikemonitor.ui.login.LoginFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -88,6 +88,7 @@
                 app:spinning_bar_width="4dp" />
 
             <TextView
+                android:id="@+id/registertrigger"
                 style="@style/parent"
                 android:layout_marginTop="@dimen/loginViewsMargin"
                 android:onClick="onLoginClick"
@@ -145,13 +146,6 @@
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/ic_google_plus" />
             </LinearLayout>
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragmentContainerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:navGraph="@navigation/mobile_navigation" />
-
         </LinearLayout>
     </ScrollView>
 
