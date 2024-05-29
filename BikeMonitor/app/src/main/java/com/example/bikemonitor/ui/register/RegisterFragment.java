@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
+import com.example.bikemonitor.R;
 import com.example.bikemonitor.databinding.FragmentRegisterBinding;
 
 public class RegisterFragment extends Fragment {
@@ -23,8 +25,16 @@ public class RegisterFragment extends Fragment {
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        //final TextView textView = binding.textGallery;
-        //loginViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        TextView backToLoginText = binding.registerBackloginTrigger;
+
+        backToLoginText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_register_to_nav_login);
+            }
+        });
+
+
         return root;
     }
 

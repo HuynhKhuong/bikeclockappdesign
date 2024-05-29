@@ -30,7 +30,9 @@
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_nav_login_to_nav_register"
-            app:destination="@id/nav_register" />
+            app:destination="@id/nav_register"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_nav_login_to_nav_content_main"
             app:destination="@id/nav_content_main" />
@@ -50,6 +52,11 @@
         <action
             android:id="@+id/action_nav_register_to_nav_content_main"
             app:destination="@id/nav_content_main" />
+        <action
+            android:id="@+id/action_nav_register_to_nav_login"
+            app:destination="@id/nav_login"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
 </navigation>
