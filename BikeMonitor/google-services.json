@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "394094514326",
+    "firebase_url": "https://smartbike-be048-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smartbike-be048",
+    "storage_bucket": "smartbike-be048.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394094514326:android:509a47a0e36f18bf2df2b7",
+        "android_client_info": {
+          "package_name": "com.example.bikemonitor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdua_lg9v1V5Q1igONmeG3FfhBn21XWY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
