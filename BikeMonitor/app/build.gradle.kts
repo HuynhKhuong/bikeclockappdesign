@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    //alias(libs.plugins.android.application)
     id("com.android.application")
     id("com.google.gms.google-services")
 }
@@ -55,3 +55,4 @@ dependencies {
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
     implementation("androidx.cardview:cardview:1.0.0")
 }
+
