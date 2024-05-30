@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -55,5 +54,4 @@ dependencies {
     implementation("com.google.android.material:material:1.2.0")
     implementation("com.github.leandroborgesferreira:loading-button-android:2.3.0")
     implementation("androidx.cardview:cardview:1.0.0")
-
 }
