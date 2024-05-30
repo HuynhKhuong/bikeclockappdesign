@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.window.OnBackAnimationCallback;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.example.bikemonitor.databinding.ContentMainBinding;
@@ -21,6 +26,26 @@ public class ContentMain extends Fragment{
 
         binding = ContentMainBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
+        //OnBackAnimationCallback
+        //OnBackInvokedDispatcher
+        class customOnBackPressed extends OnBackPressedCallback{
+            customOnBackPressed(){
+                super(true);
+            }
+
+            @Override
+            public void handleOnBackPressed(){
+                //by default do nothing
+                //no Navigator.popStack() is called
+            }
+
+        }
+
+        OnBackPressedCallback backGesture = new customOnBackPressed();
+        requireActivity().getOnBackPressedDispatcher().addCallback(backGesture);
+
 
         binding.fab.setOnClickListener(new View.OnClickListener() {
            @Override
