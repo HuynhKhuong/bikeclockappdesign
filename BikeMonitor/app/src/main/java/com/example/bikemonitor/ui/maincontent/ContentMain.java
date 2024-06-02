@@ -72,7 +72,7 @@ public class ContentMain extends Fragment{
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_content_main_to_nav_login);
+                //Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_content_main_to_nav_login);
             }
         });
         return root;

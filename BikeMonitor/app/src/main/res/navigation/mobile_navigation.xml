@@ -15,6 +15,9 @@
             app:destination="@id/nav_login"
             app:popUpTo="@+id/nav_login"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_nav_home_to_nav_devicelist"
+            app:destination="@id/nav_devicelist" />
     </fragment>
 
     <fragment
@@ -27,6 +30,9 @@
             app:destination="@id/nav_login"
             app:popUpTo="@+id/nav_login"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_nav_gallery_to_nav_devicelist"
+            app:destination="@id/nav_devicelist" />
     </fragment>
 
     <fragment
@@ -39,6 +45,9 @@
             app:destination="@id/nav_login"
             app:popUpTo="@+id/nav_login"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_nav_slideshow_to_nav_devicelist"
+            app:destination="@id/nav_devicelist" />
     </fragment>
 
     <fragment
@@ -66,15 +75,12 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_content_main"
-        android:name="com.example.bikemonitor.ui.maincontent.ContentMain"
-        android:label="Main"
-        tools:layout="@layout/content_main" >
+        android:id="@+id/nav_devicelist"
+        android:name="com.example.bikemonitor.ui.devicelist.DeviceListFragment"
+        tools:layout="@layout/fragment_devicelist" >
         <action
-            android:id="@+id/action_nav_content_main_to_nav_login"
-            app:destination="@id/nav_login"
-            app:popUpTo="@+id/nav_login"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_nav_devicelist_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
     <fragment
