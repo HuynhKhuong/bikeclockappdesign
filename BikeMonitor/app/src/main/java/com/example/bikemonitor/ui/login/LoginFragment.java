@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -34,16 +35,29 @@ public class LoginFragment extends Fragment {
                   ///move to other state
                   binding.cirLoginButton.stopAnimation();
 
-                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_content_main);
+                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
               }
           }
         );
         binding.registertrigger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_register);
+                Navigation.findNavController(binding.getRoot()).navigate(new NavDirections() {
+                    @Override
+                    public int getActionId() {
+                        return R.id.action_nav_login_to_nav_register;
+                    }
+
+                    @NonNull
+                    @Override
+                    public Bundle getArguments() {
+                        return null;
+                    }
+                });
             }
         });
+
+
         return root;
     }
 
