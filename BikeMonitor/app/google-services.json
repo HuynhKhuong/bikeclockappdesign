@@ -1,13 +1,14 @@
 {
   "project_info": {
-    "project_number": "1017819251572",
-    "project_id": "bykex-cbea4",
-    "storage_bucket": "bykex-cbea4.appspot.com"
+    "project_number": "394094514326",
+    "firebase_url": "https://smartbike-be048-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "smartbike-be048",
+    "storage_bucket": "smartbike-be048.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1017819251572:android:aca1b7e24a3fcdb4362221",
+        "mobilesdk_app_id": "1:394094514326:android:509a47a0e36f18bf2df2b7",
         "android_client_info": {
           "package_name": "com.example.bikemonitor"
         }
@@ -15,7 +16,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDCznea_qeBxHkgMehcskPsDajjHZtW9s8"
+          "current_key": "AIzaSyCdua_lg9v1V5Q1igONmeG3FfhBn21XWY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394094514326:android:81cb44b4aec1e70f2df2b7",
+        "android_client_info": {
+          "package_name": "com.example.bykeme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdua_lg9v1V5Q1igONmeG3FfhBn21XWY4"
         }
       ],
       "services": {
