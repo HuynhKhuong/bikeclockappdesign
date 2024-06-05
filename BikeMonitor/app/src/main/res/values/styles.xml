@@ -56,4 +56,8 @@
         <item name="android:paddingLeft">5dp</item>
     </style>
 
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

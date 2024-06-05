@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment">
 
+    <include
+        android:id="@+id/logout_from_gallery"
+        layout="@layout/logout_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
         android:id="@+id/text_gallery"
         android:layout_width="match_parent"
