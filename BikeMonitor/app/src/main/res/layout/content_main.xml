@@ -12,16 +12,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.maincontent.ContentMain">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="100dp"
-        android:layout_marginBottom="640dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logout_button"

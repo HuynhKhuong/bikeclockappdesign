@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
-                if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)){
+                if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)||
+                        (navDestination.getId() == R.id.nav_devicelist)){
                     bottomNav.setVisibility(View.GONE);
                     binding.appBarMain.toolbar.setVisibility(View.GONE);
                 }
@@ -92,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
 //        NavigationUI.setupWithNavController(navigationView, navController);
 }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+     @Override
+     public boolean onCreateOptionsMenu(Menu menu) {
+         // Inflate the menu; this adds items to the action bar if it is present.
+         getMenuInflater().inflate(R.menu.main, menu);
+         return true;
+     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

@@ -59,19 +59,15 @@
             android:id="@+id/action_nav_login_to_nav_register"
             app:destination="@id/nav_register"
             app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popUpTo="@+id/nav_login"
-            app:popUpToInclusive="true"/>
+            app:exitAnim="@android:anim/fade_out"/>
         <action
             android:id="@+id/action_nav_login_to_nav_content_main"
             app:destination="@id/nav_content_main"
             app:popUpTo="@+id/nav_login"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_nav_login_to_nav_gallery"
-            app:destination="@id/nav_gallery"
-            app:popUpTo="@+id/nav_login"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_nav_login_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
     <fragment
@@ -101,10 +97,8 @@
             app:popUpTo="@+id/nav_login"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_nav_register_to_nav_gallery"
-            app:destination="@id/nav_gallery"
-            app:popUpTo="@+id/nav_login"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_nav_register_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 
 </navigation>

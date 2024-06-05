@@ -59,14 +59,14 @@ public class ContentMain extends Fragment{
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-               Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                       .setAction("Action", null)
-                       .setAnchorView(R.id.fab).show();
-           }
-        });
+//        binding.fab.setOnClickListener(new View.OnClickListener() {
+//           @Override
+//           public void onClick(View view) {
+//               Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                       .setAction("Action", null)
+//                       .setAnchorView(R.id.fab).show();
+//           }
+//        });
 
         Button logoutButton = binding.logoutButton;
         logoutButton.setOnClickListener(new View.OnClickListener() {

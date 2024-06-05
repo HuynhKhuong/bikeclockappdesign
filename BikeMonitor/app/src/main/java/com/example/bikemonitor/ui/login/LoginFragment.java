@@ -37,7 +37,7 @@ public class LoginFragment extends Fragment {
                   ///move to other state
                   binding.cirLoginButton.stopAnimation();
 
-                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
+                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
               }
           }
         );

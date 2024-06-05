@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
 import com.example.bikemonitor.databinding.FragmentSlideshowBinding;
-import com.example.bikemonitor.databinding.LogoutButtonBinding;
 
 public class SlideshowFragment extends Fragment {
 
@@ -44,15 +43,6 @@ public class SlideshowFragment extends Fragment {
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
-
-        LogoutButtonBinding logoutButtonBinding = binding.logoutFromSlideshow;
-        Button button = logoutButtonBinding.logoutButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_slideshow_to_nav_login);
-            }
-        });
 
         return root;
     }

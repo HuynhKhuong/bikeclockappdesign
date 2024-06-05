@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
 import com.example.bikemonitor.databinding.FragmentHomeBinding;
-import com.example.bikemonitor.databinding.LogoutButtonBinding;
 
 public class HomeFragment extends Fragment {
 
@@ -40,21 +39,22 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView speedValue = binding.speedValue;
+        homeViewModel.getText().observe(getViewLifecycleOwner(), speedValue::setText);
 
+        final TextView speedUnit = binding.speedUnit;
+        speedUnit.setText(" km/h");
+
+        final TextView parameterLegend = binding.additionalInformationLegend;
+        parameterLegend.setText("ODO: ");
+        final TextView parameterValue = binding.additionalInformationValue;
+        parameterValue.setText("0000");
+        final TextView parameterUnit = binding.additionalInformationUnit;
+        parameterUnit.setText("km/h");
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
 
-        LogoutButtonBinding logoutButtonBinding = binding.logoutFromHome;
-        Button button = logoutButtonBinding.logoutButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_home_to_nav_login);
-            }
-        });
         return root;
     }
 
