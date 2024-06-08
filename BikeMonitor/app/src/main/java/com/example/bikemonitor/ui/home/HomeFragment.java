@@ -50,7 +50,7 @@ public class HomeFragment extends Fragment {
         final TextView parameterValue = binding.additionalInformationValue;
         parameterValue.setText("0000");
         final TextView parameterUnit = binding.additionalInformationUnit;
-        parameterUnit.setText("km/h");
+        parameterUnit.setText("km");
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);

@@ -8,8 +8,8 @@
     <string name="appbar_displayed_title">DisplayedTitle</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_info">Info</string>
+    <string name="menu_settings">Settings</string>
 
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
@@ -30,5 +30,11 @@
     <string name="nav_close">Close</string>
 
     <string name="element_text"></string>
+
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="title_existing_devices">Existing Devices</string>
+    <string name="none_found">No devices found</string>
+    <string name="none_paired">No devices found</string>
 
 </resources>

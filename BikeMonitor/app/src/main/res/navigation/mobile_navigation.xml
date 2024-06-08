@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.example.bikemonitor.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="@string/menu_info"
         tools:layout="@layout/fragment_gallery" >
         <action
             android:id="@+id/action_nav_gallery_to_nav_login"
@@ -38,7 +38,7 @@
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.bikemonitor.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/menu_settings"
         tools:layout="@layout/fragment_slideshow" >
         <action
             android:id="@+id/action_nav_slideshow_to_nav_login"
@@ -77,6 +77,23 @@
         <action
             android:id="@+id/action_nav_devicelist_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_devicelist_to_nav_devicelistdiscover"
+            app:destination="@id/nav_devicelistdiscover" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_devicelistdiscover"
+        android:name="com.example.bikemonitor.ui.devicelist.DeviceListDiscoverFragment"
+        tools:layout="@layout/fragment_devicediscover" >
+        <action
+            android:id="@+id/action_nav_devicelist_to_nav_home"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_devicelistdiscover_to_nav_devicelist"
+            app:destination="@id/nav_devicelist"
+            app:popUpTo="@id/nav_devicelistdiscover"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment

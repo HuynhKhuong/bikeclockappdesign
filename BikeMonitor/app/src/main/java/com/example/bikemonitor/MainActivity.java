@@ -1,6 +1,17 @@
 package com.example.bikemonitor;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.LayoutInflater;
@@ -10,15 +21,14 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.bikemonitor.databinding.FragmentSlideshowBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
@@ -26,21 +36,43 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
 
-import java.lang.reflect.Array;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration mAppBarConfiguration;
-    private ActivityMainBinding binding;
+//    public class BluetoothBroadcastReceiver extends BroadcastReceiver{
+//        private Set<BluetoothDevice> m_systemDeviceList;
+//        public BluetoothBroadcastReceiver(Set<BluetoothDevice> systemDeviceList){
+//            super();
+//            m_systemDeviceList = systemDeviceList;
+//        }
+//
+//        public Set<BluetoothDevice> getSystemDeviceList(){
+//            return m_systemDeviceList;
+//        }
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if(BluetoothDevice.ACTION_FOUND.equals(action)){
+//                //Discovery has found a device. Get the bluetooth device object
+//                //and its info from the intent
+//                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//                m_systemDeviceList.add(device);
+//            }
+//        }
+//    }
 
+    private ActivityMainBinding binding;
+    private BluetoothAdapter m_BtAdapter;
+
+    //    private BluetoothBroadcastReceiver m_bluetoothDiscoveryHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,22 +83,35 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
         ActionBar mainBar = getSupportActionBar();
 
+//For debug purpose
+        TextView debugText = binding.textDebug;
+        debugText.setVisibility(View.GONE);
 
-//        DrawerLayout drawer = binding.drawerLayout;
-//        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.nav_open, R.string.nav_close);
-        // pass the Open and Close toggle for the drawer layout listener
-        // to toggle the button
+        ///Bluetooth startup sequence
+        //BluetoothConnectionSetup.initDeviceBluetooth(this);
 
-//        drawer.addDrawerListener(actionBarDrawerToggle);
-        // to make the Navigation drawer icon always appear on the action bar
-//        mainBar.setDisplayHomeAsUpEnabled(true);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.BLUETOOTH_CONNECT}, 1);
+        }
+        m_BtAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!m_BtAdapter.isEnabled()) {
+            final int REQUEST_ENABLE_BT = 1;
+            if (m_BtAdapter == null) {
+                debugText.setVisibility(View.VISIBLE);
+                debugText.setText("ERROR BLUETOOTH ADAPTER RETURNS NULL");
+            } else if (!m_BtAdapter.isEnabled()) {
+                Intent enableBltIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBltIntent, REQUEST_ENABLE_BT);
+            }
+        }
 
-        // Passing each menu ID as a set of Ids because each
-//        // menu should be considered as top level destinations.
-//        mAppBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-//                .setOpenableLayout(drawer)
-//                .build();
+        //m_BtAdapter.cancelDiscovery();
+
+//        Set<BluetoothDevice> blankSet = new HashSet<BluetoothDevice>();
+//        m_bluetoothDiscoveryHandler = new BluetoothBroadcastReceiver(blankSet);
+//
+//        IntentFilter bluetoothFilterIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+//        registerReceiver(m_bluetoothDiscoveryHandler, bluetoothFilterIntent);
 
         NavHostFragment hostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(
                                         R.id.nav_host_fragment_content_main);
@@ -79,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
                 if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)||
-                        (navDestination.getId() == R.id.nav_devicelist)){
+                        (navDestination.getId() == R.id.nav_devicelist) || (navDestination.getId() == R.id.nav_devicelistdiscover)){
                     bottomNav.setVisibility(View.GONE);
                     binding.appBarMain.toolbar.setVisibility(View.GONE);
                 }
@@ -89,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-//        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-//        NavigationUI.setupWithNavController(navigationView, navController);
 }
 
      @Override
@@ -211,10 +254,30 @@ public class MainActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState, persistentState);
         //actionBarDrawerToggle.syncState();
     }
-    //    @Override
-//    public boolean onSupportNavigateUp() {
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-//                || super.onSupportNavigateUp();
-//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unregisterReceiver(m_bluetoothDiscoveryHandler);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        if (BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE.equals(data.getAction())) {
+//            if (resultCode == RESULT_CANCELED) {
+//                //Retry Discover again
+//            }
+//        }
+//        if(BluetoothAdapter.ACTION_REQUEST_ENABLE.equals(data.getAction())) {
+//            if (resultCode == RESULT_CANCELED) {
+//                binding.textDebug.setVisibility(View.VISIBLE);
+//                binding.textDebug.setText("ERROR BLUETOOTH ADAPTER CAN'T OPEN");
+//            } else if (resultCode == RESULT_OK) {
+//
+//                binding.textDebug.setVisibility(View.VISIBLE);
+//                binding.textDebug.setText("ERROR BLUETOOTH ADAPTER OPENS");
+//            }
+//        }
+    }
 }

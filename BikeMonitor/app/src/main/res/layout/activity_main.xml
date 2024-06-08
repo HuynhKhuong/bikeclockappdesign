@@ -28,6 +28,19 @@
 <!--        android:fitsSystemWindows="false"-->
 <!--        app:headerLayout="@layout/nav_header_main">-->
 <!--    </com.google.android.material.navigation.NavigationView>-->
+    <TextView
+        android:id="@+id/text_debug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_content_main"
