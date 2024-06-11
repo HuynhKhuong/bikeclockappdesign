@@ -7,6 +7,68 @@
     tools:context=".ui.slideshow.SlideshowFragment">
 
     <TextView
+        android:id="@+id/setting_screentitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="normal|bold"
+        android:text="SETTINGS"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="60dp"
+        tools:ignore="NotSibling">
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/setting_screentitle"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:weightSum="12">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/setting_wheelsize_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="normal|bold"
+        android:text="Wheel Size Options"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp">
+    </TextView>
+
+    <Spinner
+        android:id="@+id/wheelsize_options"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/setting_wheelsize_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/white"
+        android:layout_marginTop="10dp"/>
+
+    
+    <TextView
         android:id="@+id/text_slideshow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

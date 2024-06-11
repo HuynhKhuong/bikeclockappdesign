@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -39,18 +40,39 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView speedValue = binding.speedValue;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), speedValue::setText);
+        binding.speedValue.setText(homeViewModel.getDisplayCurrentSpeedValue());
+        binding.speedUnit.setText(homeViewModel.getDisplayCurrentSpeedUnit());
 
-        final TextView speedUnit = binding.speedUnit;
-        speedUnit.setText(" km/h");
 
-        final TextView parameterLegend = binding.additionalInformationLegend;
-        parameterLegend.setText("ODO: ");
-        final TextView parameterValue = binding.additionalInformationValue;
-        parameterValue.setText("0000");
-        final TextView parameterUnit = binding.additionalInformationUnit;
-        parameterUnit.setText("km");
+        binding.additionalInformationLegend.setText(homeViewModel.getDisplayLegend());
+        binding.additionalInformationValue.setText(homeViewModel.getDisplayValue());
+        binding.additionalInformationUnit.setText(homeViewModel.getDisplayUnit());
+        homeViewModel.getCurrentIndex().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                binding.additionalInformationLegend.setText(homeViewModel.getDisplayLegend());
+                binding.additionalInformationValue.setText(homeViewModel.getDisplayValue());
+                binding.additionalInformationUnit.setText(homeViewModel.getDisplayUnit());
+            }
+        });
+
+
+
+        Button additionalInformationMenu = binding.additionalInformationSelectbutton;
+        additionalInformationMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.updateCurrentUnit();
+            }
+        });
+
+        Button lockIndicator = binding.lockindicator;
+        lockIndicator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);

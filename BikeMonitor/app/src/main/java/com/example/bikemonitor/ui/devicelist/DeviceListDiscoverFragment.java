@@ -22,47 +22,28 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.bikemonitor.R;
+import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
+import com.example.bikemonitor.bluetoothbackgroundsetup.UserErrorHandler;
 import com.example.bikemonitor.databinding.FragmentDevicediscoverBinding;
 
 import java.util.Set;
 
 public class DeviceListDiscoverFragment extends Fragment {
 
-    private class customOnBackPressed extends OnBackPressedCallback {
-        customOnBackPressed() {
-            super(true);
-        }
-
+    private class ActivityUserError implements UserErrorHandler {
         @Override
-        public void handleOnBackPressed() {
-            /// stop discovery and every other things
-
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN}, 1);
-            }
-            m_btAdapter.cancelDiscovery();
-
-            Navigation.findNavController(binding.getRoot()).navigate(new NavDirections() {
-                @Override
-                public int getActionId() {
-                    return R.id.action_nav_devicelistdiscover_to_nav_devicelist;
-                }
-
-                @NonNull
-                @Override
-                public Bundle getArguments() {
-                    return null;
-                }
-            });
-            m_btAdapter = null;
+        public void execute(){
+            binding.textDebug.setVisibility(View.VISIBLE);
+            binding.textDebug.setText("m_btAdapter IS NULL");
         }
     }
-
-    private BluetoothAdapter m_btAdapter;
 
     /**
      * Newly discovered devices
@@ -76,16 +57,20 @@ public class DeviceListDiscoverFragment extends Fragment {
 
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
             // Cancel discovery because it's costly and we're about to connect
-            if (m_btAdapter != null) {
-                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-
-                }
-                m_btAdapter.cancelDiscovery();
-            }
+            BluetoothConnectionSetup.getBluetoothConnectionSetup().disableDiscovery(binding.getRoot(),
+                    new ActivityUserError());
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
+
+            m_deviceChosenNotify.setDeviceInfo(info);
+            m_deviceChosenNotify.setDeviceMac(address);
+            m_deviceChosenNotify.set_hasUserSearchedNewDevice(true);
+            NavHostFragment hostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(
+                                                                        R.id.nav_host_fragment_content_main);
+            NavController navController = hostFragment.getNavController();
+            navController.popBackStack();
         }
     };
 
@@ -117,7 +102,10 @@ public class DeviceListDiscoverFragment extends Fragment {
             }
         }
     };
+
     private FragmentDevicediscoverBinding binding;
+    private DeviceListLiveViewModel m_deviceChosenNotify;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -127,30 +115,20 @@ public class DeviceListDiscoverFragment extends Fragment {
         View root = binding.getRoot();
         binding.textDebug.setVisibility(View.GONE);
 
-
-        OnBackPressedCallback backGesture = new DeviceListDiscoverFragment.customOnBackPressed();
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
-
-        //Start doing discovery
-
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN}, 1);
-        }
-        else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-        m_btAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (m_btAdapter != null) {
-            m_btAdapter.startDiscovery();
-        }
-        else{
-            binding.textDebug.setVisibility(View.VISIBLE);
-            binding.textDebug.setText("m_btAdapter IS NULL");
-        }
+        m_deviceChosenNotify = new ViewModelProvider(requireActivity()).get(DeviceListLiveViewModel.class);
+        //Start doing discover
+        BluetoothConnectionSetup.getBluetoothConnectionSetup().doDiscovery(root,new ActivityUserError());
+            
+      if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+          ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN}, 1);
+      }
+      else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+          ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+      }
+      else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+          ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+      }
+//      m_btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Initialize array adapters. One for already paired devices and
         // one for newly discovered devices
@@ -178,17 +156,23 @@ public class DeviceListDiscoverFragment extends Fragment {
 
 
         // Get a set of currently paired devices
-        Set<BluetoothDevice> pairedDevices = m_btAdapter.getBondedDevices();
+        Set<BluetoothDevice> pairedDevices = BluetoothConnectionSetup.getBluetoothConnectionSetup().getPairedDevices(root, new ActivityUserError());
 
         // If there are paired devices, add each one to the ArrayAdapter
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                pairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-            }
-        } else {
-            String noDevices = getResources().getText(R.string.none_paired).toString();
-            pairedDevicesArrayAdapter.add(noDevices);
+        if(pairedDevices == null){
+            //do nothing
         }
+        else{
+            if (pairedDevices.size() > 0) {
+                for (BluetoothDevice device : pairedDevices) {
+                    pairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                }
+            } else {
+                String noDevices = getResources().getText(R.string.none_paired).toString();
+                pairedDevicesArrayAdapter.add(noDevices);
+            }
+        }
+
         return root;
     }
 
@@ -196,25 +180,8 @@ public class DeviceListDiscoverFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         // Make sure we're not doing discovery anymore
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.BLUETOOTH_SCAN}, 1);
-        }
-        else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        else if(ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        }
-        if (m_btAdapter != null) {
-            m_btAdapter.cancelDiscovery();
-        }
-        else{
-            binding.textDebug.setVisibility(View.VISIBLE);
-            binding.textDebug.setText("m_btAdapter IS NULL");
-        }
+        BluetoothConnectionSetup.getBluetoothConnectionSetup().disableDiscovery(binding.getRoot(), new ActivityUserError());
         // Unregister broadcast listeners
         requireActivity().unregisterReceiver(mReceiver);
-
-        m_btAdapter = null;
     }
 }

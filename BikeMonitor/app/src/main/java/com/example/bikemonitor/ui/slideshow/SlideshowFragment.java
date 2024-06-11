@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -14,11 +18,44 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
+import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
+import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentSlideshowBinding;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SlideshowFragment extends Fragment {
 
     private FragmentSlideshowBinding binding;
+    private ArrayList<String> m_wheelsOptions = new ArrayList<String>(Arrays.asList(new String[]{
+            "20x1.25 inch",
+            "24x1.5 inch",
+            "26x1.75 inch",
+            "27.5x2.0 inch",
+            "29x2.2 inch",
+            "700x23c",
+            "700x25c",
+            "700x27c",
+            "700x32c",
+            "700x35c"
+            }));
+    private ArrayAdapter<String> m_wheelsOptionsArrayAdapter;
+
+    private final AdapterView.OnItemSelectedListener mOptionClickListener = new AdapterView.OnItemSelectedListener() {
+
+        public void onItemSelected(AdapterView<?> av, View v, int arg2, long arg3) {
+            ////Check current Connection State
+            if(BluetoothConnectionSetup.getBluetoothConnectionSetup().getCurrentState() == BluetoothConnectionSetup.STATE_CONNECTED){
+                ComComponent.getComComponent().writeConfig("11111111", Integer.toString(arg2));
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
     private class customOnBackPressed extends OnBackPressedCallback {
         customOnBackPressed(){
             super(true);
@@ -38,7 +75,15 @@ public class SlideshowFragment extends Fragment {
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        Spinner wheelSizeOptionList = binding.wheelsizeOptions;
+
+        m_wheelsOptionsArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.option_name, m_wheelsOptions);
+        wheelSizeOptionList.setAdapter(m_wheelsOptionsArrayAdapter);
+        wheelSizeOptionList.setOnItemSelectedListener(mOptionClickListener);
+
         final TextView textView = binding.textSlideshow;
+
+
         //slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         OnBackPressedCallback backGesture = new customOnBackPressed();

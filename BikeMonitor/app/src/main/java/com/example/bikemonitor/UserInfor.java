@@ -8,7 +8,7 @@ public class UserInfor {
     private String m_userID;
 
     // Recorded class for each user
-    static class RecordedAttribute{
+    public static class RecordedAttribute{
         private int m_userDistance;
         private int m_userAvrVelocity;
         private int m_userDateRecorded;

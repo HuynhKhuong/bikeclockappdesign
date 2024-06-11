@@ -13,21 +13,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PersistableBundle;
+import android.os.UserHandle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
+import com.example.bikemonitor.bluetoothbackgroundsetup.UserErrorHandler;
+import com.example.bikemonitor.combackground.ComComponent;
+import com.example.bikemonitor.combackground.JsonPackage;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
@@ -42,37 +46,72 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class MainActivity extends AppCompatActivity {
+    private class UserHandler extends Handler{
+        private AppCompatActivity m_currentParentActivity;
+        UserHandler(AppCompatActivity currentParentActivity){
+            super();
+            m_currentParentActivity = currentParentActivity;
+        }
+        @Override
+        public void handleMessage(@NonNull Message msg){
+            switch(msg.what){
+                case BluetoothConnectionSetup.ERROR:
+                    String errorText = "Error detected: ";
+                    errorText += msg.getData().getString(BluetoothConnectionSetup.ERROR_TYPE);
 
-//    public class BluetoothBroadcastReceiver extends BroadcastReceiver{
-//        private Set<BluetoothDevice> m_systemDeviceList;
-//        public BluetoothBroadcastReceiver(Set<BluetoothDevice> systemDeviceList){
-//            super();
-//            m_systemDeviceList = systemDeviceList;
-//        }
-//
-//        public Set<BluetoothDevice> getSystemDeviceList(){
-//            return m_systemDeviceList;
-//        }
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String action = intent.getAction();
-//            if(BluetoothDevice.ACTION_FOUND.equals(action)){
-//                //Discovery has found a device. Get the bluetooth device object
-//                //and its info from the intent
-//                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//                m_systemDeviceList.add(device);
-//            }
-//        }
-//    }
+                    Snackbar errorSnackbar = Snackbar.make(
+                            binding.drawerLayout,
+                            errorText,
+                            5000);
+                    errorSnackbar.show();
+                    break;
+                case BluetoothConnectionSetup.MESSAGE_DEVICE_NAME:
+                    Snackbar deviceNameSnackbar = Snackbar.make(
+                            binding.drawerLayout,
+                            msg.getData().getString(BluetoothConnectionSetup.DEVICE_NAME),
+                            5000);
+                    deviceNameSnackbar.show();
+                    break;
+                case BluetoothConnectionSetup.DEVICE_READ:
+
+                    Snackbar deviceReadSnackbar = Snackbar.make(
+                            binding.drawerLayout,
+                            "Data Written!",
+                            5000);
+                    deviceReadSnackbar.show();
+                    //ComComponent.getComComponent(m_currentParentActivity).getRawPayload((byte[])msg.obj,(int)msg.arg1);
+
+                    break;
+                case BluetoothConnectionSetup.DEVICE_WRITE:
+//                    String sentMsg = msg.getData().getString(BluetoothConnectionSetup.BUFFER_NAME);
+//                    Snackbar bufferNameSnackbar = Snackbar.make(
+//                            binding.drawerLayout,
+//                            sentMsg,
+//                            5000);
+//                    bufferNameSnackbar.show();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + msg.what);
+            }
+        }
+    }
+    private class ActivityUserError implements UserErrorHandler {
+        @Override
+        public void execute()
+        {
+            Snackbar snackbar = Snackbar.make(
+                    binding.drawerLayout,
+                    "Bluetooth Is Not Enabled!",
+                    5);
+            snackbar.show();
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new UserHandler(this);
 
     private ActivityMainBinding binding;
-    private BluetoothAdapter m_BtAdapter;
-
-    //    private BluetoothBroadcastReceiver m_bluetoothDiscoveryHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,38 +119,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.appBarMain.toolbar);
+        setSupportActionBar(binding.toolbar);
         ActionBar mainBar = getSupportActionBar();
 
-//For debug purpose
-        TextView debugText = binding.textDebug;
-        debugText.setVisibility(View.GONE);
-
+        ComComponent obj = ComComponent.getComComponent(this);
         ///Bluetooth startup sequence
-        //BluetoothConnectionSetup.initDeviceBluetooth(this);
+        BluetoothConnectionSetup.getBluetoothConnectionSetup(mHandler).initDeviceBluetooth(this, new ActivityUserError());
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.BLUETOOTH_CONNECT}, 1);
-        }
-        m_BtAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!m_BtAdapter.isEnabled()) {
-            final int REQUEST_ENABLE_BT = 1;
-            if (m_BtAdapter == null) {
-                debugText.setVisibility(View.VISIBLE);
-                debugText.setText("ERROR BLUETOOTH ADAPTER RETURNS NULL");
-            } else if (!m_BtAdapter.isEnabled()) {
-                Intent enableBltIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBltIntent, REQUEST_ENABLE_BT);
-            }
-        }
 
-        //m_BtAdapter.cancelDiscovery();
-
-//        Set<BluetoothDevice> blankSet = new HashSet<BluetoothDevice>();
-//        m_bluetoothDiscoveryHandler = new BluetoothBroadcastReceiver(blankSet);
-//
-//        IntentFilter bluetoothFilterIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//        registerReceiver(m_bluetoothDiscoveryHandler, bluetoothFilterIntent);
 
         NavHostFragment hostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(
                                         R.id.nav_host_fragment_content_main);
@@ -126,11 +141,11 @@ public class MainActivity extends AppCompatActivity {
                 if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)||
                         (navDestination.getId() == R.id.nav_devicelist) || (navDestination.getId() == R.id.nav_devicelistdiscover)){
                     bottomNav.setVisibility(View.GONE);
-                    binding.appBarMain.toolbar.setVisibility(View.GONE);
+                    binding.toolbar.setVisibility(View.GONE);
                 }
                 else {
                     bottomNav.setVisibility(View.VISIBLE);
-                    binding.appBarMain.toolbar.setVisibility(View.VISIBLE);
+                    binding.toolbar.setVisibility(View.VISIBLE);
                 }
             }
         });

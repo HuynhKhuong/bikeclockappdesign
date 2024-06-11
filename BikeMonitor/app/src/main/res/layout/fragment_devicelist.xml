@@ -6,27 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".ui.devicelist.DeviceListFragment">
 
+    <TextView
+        android:id="@+id/screentitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="normal|bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp">
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/horizontal_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/screentitle"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:weightSum="12">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+    </LinearLayout>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_divider"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/title_existing_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#666"
             android:paddingLeft="5dp"
             android:text="@string/title_existing_devices"
             android:textColor="#fff"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
+
+        <androidx.legacy.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
+
+        <LinearLayout
+            android:id="@+id/subhorizontal_divider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="12">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="5"
+                android:background="@color/colorPrimary" />
+        </LinearLayout>
+
+        <androidx.legacy.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
 
         <ListView
             android:id="@+id/existing_devices"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:stackFromBottom="true"/>
+            android:stackFromBottom="false"/>
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
