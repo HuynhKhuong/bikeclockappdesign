@@ -21,6 +21,7 @@ import com.example.bikemonitor.R;
 import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
 import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentSlideshowBinding;
+import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +47,11 @@ public class SlideshowFragment extends Fragment {
 
         public void onItemSelected(AdapterView<?> av, View v, int arg2, long arg3) {
             ////Check current Connection State
-            if(BluetoothConnectionSetup.getBluetoothConnectionSetup().getCurrentState() == BluetoothConnectionSetup.STATE_CONNECTED){
+            if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                    DeviceConnectionStateManager.DEVICE_ACCEPTED){
+                DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                        DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS
+                );
                 ComComponent.getComComponent().writeConfig("11111111", Integer.toString(arg2));
             }
         }

@@ -8,6 +8,10 @@ public abstract class PackageInterface{
 
   public abstract String packData();
 
+  void set_datas(DataInterface data){
+    m_datas = data;
+  }
+
   public DataInterface get_attributes(){
     return m_attributes;
   }

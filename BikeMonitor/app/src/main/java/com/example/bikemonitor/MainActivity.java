@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
 import android.os.UserHandle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup
 import com.example.bikemonitor.bluetoothbackgroundsetup.UserErrorHandler;
 import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.combackground.JsonPackage;
+import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,6 +51,9 @@ import com.example.bikemonitor.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     private class UserHandler extends Handler{
         private AppCompatActivity m_currentParentActivity;
+        private byte[] currentReceivedPayload = new byte[1024];
+        private int receivedDLC = 0;
+        private boolean payloadReceived = true;
         UserHandler(AppCompatActivity currentParentActivity){
             super();
             m_currentParentActivity = currentParentActivity;
@@ -74,22 +79,28 @@ public class MainActivity extends AppCompatActivity {
                     deviceNameSnackbar.show();
                     break;
                 case BluetoothConnectionSetup.DEVICE_READ:
+                    ///Cache handling to ensure the whole package is received completely before processing
+                    final byte endPayloadCharacter = (byte)'}';
+                    payloadReceived = false;
+                    int index = 0;
+                    while(index < (int)msg.arg1){
+                        currentReceivedPayload[receivedDLC] = ((byte[])msg.obj)[index];
+                        if(((byte[])msg.obj)[index] == endPayloadCharacter){
+                            payloadReceived = true;
+                            receivedDLC++;
+                            break;
+                        }
 
-                    Snackbar deviceReadSnackbar = Snackbar.make(
-                            binding.drawerLayout,
-                            "Data Written!",
-                            5000);
-                    deviceReadSnackbar.show();
-                    //ComComponent.getComComponent(m_currentParentActivity).getRawPayload((byte[])msg.obj,(int)msg.arg1);
-
+                        index++;
+                        receivedDLC++;
+                    }
+                    if(payloadReceived){
+                        ComComponent.getComComponent().getRawPayload(currentReceivedPayload,receivedDLC);
+                        ComComponent.getComComponent().processPayload();
+                        receivedDLC = 0;
+                    }
                     break;
                 case BluetoothConnectionSetup.DEVICE_WRITE:
-//                    String sentMsg = msg.getData().getString(BluetoothConnectionSetup.BUFFER_NAME);
-//                    Snackbar bufferNameSnackbar = Snackbar.make(
-//                            binding.drawerLayout,
-//                            sentMsg,
-//                            5000);
-//                    bufferNameSnackbar.show();
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + msg.what);
@@ -103,10 +114,52 @@ public class MainActivity extends AppCompatActivity {
             Snackbar snackbar = Snackbar.make(
                     binding.drawerLayout,
                     "Bluetooth Is Not Enabled!",
-                    5);
+                    5000);
             snackbar.show();
         }
     }
+
+
+    //Timer implementation
+    private long startTimeMillis = 0;
+
+    Handler timerCollapseHandler = new Handler();
+    Runnable timerRunnable = new Runnable(){
+        @Override
+        public void run(){
+            //background cyclic transmission
+            //Check current device connection status
+            switch(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState()){
+                case DeviceConnectionStateManager.DEVICE_DISCONNECTED:
+                    //no transmission
+                    //clean up data connection
+                    ComComponent.getComComponent().cleanServiceQueue();
+                    break;
+
+                case DeviceConnectionStateManager.DEVICE_ACCEPTED:
+                    //cyclic transmission
+                    //default payload is read current data
+                    ComComponent.getComComponent().readCurrentData("11111111");
+                    ComComponent.getComComponent().sendRawPayload();
+                    break;
+                case DeviceConnectionStateManager.DEVICE_LISTENING:
+                    //cyclic initiate transmission attempts
+                    ComComponent.getComComponent().cleanServiceQueue();
+                    ComComponent.getComComponent().initiateConnectWithoutKey();
+                    ComComponent.getComComponent().sendRawPayload();
+                    break;
+                case DeviceConnectionStateManager.DEVICE_FORCEUNLOCK:
+                    Log.d("" , "Current Device Connection State " + Integer.toString(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState()));
+                    ComComponent.getComComponent().cleanServiceQueue();
+                    ComComponent.getComComponent().unlockWithKey("11111111");
+                    ComComponent.getComComponent().sendRawPayload();
+                default:
+                    break;
+            }
+            //Reschedule timer 500ms
+            timerCollapseHandler.postDelayed(this, 500);
+        }
+    };
 
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new UserHandler(this);
@@ -119,14 +172,19 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        ///Background components Initialize
+        ///1.Initialize ComComponent Object
+        ComComponent obj = ComComponent.getComComponent(this);
+        ///2.Initialize Background timer
+        timerCollapseHandler.postDelayed(timerRunnable, 0);
+        ///3.Bluetooth startup sequence
+        BluetoothConnectionSetup.getBluetoothConnectionSetup(mHandler).initDeviceBluetooth(this, new ActivityUserError());
+        ///4.Device state Initialize mapping with connection status
+        DeviceConnectionStateManager deviceState = DeviceConnectionStateManager.getDeviceConnectionStateManager();
+
+        ///UI Related Initialize
         setSupportActionBar(binding.toolbar);
         ActionBar mainBar = getSupportActionBar();
-
-        ComComponent obj = ComComponent.getComComponent(this);
-        ///Bluetooth startup sequence
-        BluetoothConnectionSetup.getBluetoothConnectionSetup(mHandler).initDeviceBluetooth(this, new ActivityUserError());
-
-
 
         NavHostFragment hostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(
                                         R.id.nav_host_fragment_content_main);

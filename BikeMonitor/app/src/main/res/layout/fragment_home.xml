@@ -140,20 +140,38 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/lockindicator"
+        android:id="@+id/lockindicator_lock"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        app:icon="@drawable/ic_unlocked"
+        app:icon="@drawable/ic_lock"
         app:iconSize="24dp"
-        android:paddingStart="10dp"
+        android:paddingStart="12dp"
         android:paddingEnd="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded"
         app:layout_constraintStart_toEndOf="@id/recorder"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/lockindicator_unlock"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="20dp"
+        app:icon="@drawable/ic_unlocked"
+        app:iconSize="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toEndOf="@id/recorder"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

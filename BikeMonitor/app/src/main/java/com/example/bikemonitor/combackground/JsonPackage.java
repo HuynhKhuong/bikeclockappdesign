@@ -37,8 +37,6 @@ public class JsonPackage extends PackageInterface {
         }
         return data;
     }
-
-    public AttributesIndex m_AttributesIndex;
 }
 
 class AttributesIndex{
@@ -64,7 +62,7 @@ class AttributesIndex{
     }
 
 
-    public class ESP32StringData implements DataInterface{
+    public static class ESP32StringData implements DataInterface{
         ESP32StringData(String userHeader){
             super();
             m_userHeader = userHeader;
@@ -82,7 +80,7 @@ class AttributesIndex{
 
         private String m_userHeader;
     }
-    public class ESP32IntValues implements DataInterface{
+    public static class ESP32IntValues implements DataInterface{
         ESP32IntValues(int data){
             super();
             m_userData = data;

@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.bikemonitor.combackground.ComComponent;
+import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 import com.example.bikemonitor.ui.devicelist.DeviceListLiveViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,7 +50,6 @@ public class BluetoothConnectionSetup {
     }
     private BluetoothConnectionSetup(Handler userHandler) {
         m_State = STATE_NONE;
-        m_NewState = m_State;
         m_BtAdapter = BluetoothAdapter.getDefaultAdapter();
         m_userHandler = userHandler;
     }
@@ -299,6 +299,9 @@ public class BluetoothConnectionSetup {
             OutputStream tmpOut = null;
             m_currentParentView = currentParentView;
             m_currentParrentActivity = null;
+            DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                    DeviceConnectionStateManager.DEVICE_LISTENING
+            );
             // Get the input and output streams, using temp objects because
             // member streams are final
             try {
@@ -362,22 +365,18 @@ public class BluetoothConnectionSetup {
             // Keep listening to the InputStream until an exception occurs
             while (m_State == STATE_CONNECTED) {
                 try {
-                    // Read from the InputStream
-//                    final int availablebytes = mmInStream.available();
-//                    if(availablebytes == 0){
-//                        continue;
-//                    }
-                    if(!ComComponent.getComComponent().get_m_isCommunictionEstablished()) {
-                        ComComponent.getComComponent().set_m_isCommunictionEstablished(true);
-                        ComComponent.getComComponent().initiateConnectWithoutKey();
-                    }
                     byte[] buffer = new byte[1024];//[availablebytes];
 
-                    Log.d("mmInStream.rad(buffer);", new String(buffer));
-                    m_userHandler.obtainMessage(DEVICE_READ, bytes, -1, buffer).sendToTarget();
-
                     bytes = mmInStream.read(buffer);
-
+                    byte[] readbuffer = new byte[bytes];
+                    int index = 0;
+                    while(index < bytes){
+                        readbuffer[index] = buffer[index];
+                        index++;
+                    }
+                    Log.d("mmInStream.rad(buffer);", new String(readbuffer));
+                    Log.d("mmInStream.rad(buffer) returns ", Integer.toString(bytes));
+                    m_userHandler.obtainMessage(DEVICE_READ, bytes, -1, readbuffer).sendToTarget();
 
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
@@ -415,6 +414,9 @@ public class BluetoothConnectionSetup {
                 msg.setData(bundle);
                 m_userHandler.sendMessage(msg);
                 mmSocket.close();
+                DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                        DeviceConnectionStateManager.DEVICE_DISCONNECTED
+                );
             } catch (IOException e) {
             }
         }
@@ -509,50 +511,6 @@ public class BluetoothConnectionSetup {
                 }
             }
 
-//            try {
-//                // Connect the device through the socket. This will block
-//                // until it succeeds or throws an exception
-//
-//                if(mmSocket != null) {
-//                    mmSocket.connect();
-//                }
-//            } catch (IOException connectException) {
-//                Log.e(TAG, connectException.toString());
-//
-//                // Some 4.1 devices have problems, try an alternative way to connect
-//                // See https://github.com/don/BluetoothSerial/issues/89
-//                try {
-//                    Log.i(TAG, "Trying fallback...");
-//                    mmSocket = (BluetoothSocket) mmDevice.getClass().getMethod("creatRfcommSocket",
-//                                                                            new Class[]{int.class}).invoke(mmDevice, 1);
-//                            /*
-//                            getMethod("createRfcommSocket", new Class[]{int.class}).invoke(mmDevice, 1);
-//                    mmSocket.connect();
-//                             */
-//                }
-//                catch(IOException e1){}
-//                try{
-//                    mmSocket.connect();
-//                    Log.i(TAG, "Connected");
-//                }
-//                    catch(IOException e) {
-//                    }
-//                    // Unable to connect; close the socket and get out
-//                    try {
-//                        Log.i(TAG, "Trying fallback....");
-//                        mmSocket.close();
-//                    } catch (IOException closeException) {
-//                        Message msg = m_userHandler.obtainMessage(ERROR);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putString(ERROR_TYPE, "Can't Connect to Device");
-//                        msg.setData(bundle);
-//                        m_userHandler.sendMessage(msg);
-//                    }
-//                    connectionFailed();
-//                    return;
-//                }
-//            }
-
             // Start the connected thread
             if(m_currentParentView != null){
                 connected(mmSocket, mmDevice, m_currentParentView);
@@ -572,6 +530,9 @@ public class BluetoothConnectionSetup {
                 msg.setData(bundle);
                 m_userHandler.sendMessage(msg);
                 mmSocket.close();
+                DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                        DeviceConnectionStateManager.DEVICE_DISCONNECTED
+                );
             } catch (IOException e) { }
         }
     }
@@ -600,7 +561,7 @@ public class BluetoothConnectionSetup {
         Bundle bundle = new Bundle();
         bundle.putString(DEVICE_NAME, device.getName());
         msg.setData(bundle);
-        //m_userHandler.sendMessage(msg);
+        m_userHandler.sendMessage(msg);
 
         if(socket == null){
             msg = m_userHandler.obtainMessage(ERROR);
@@ -655,6 +616,10 @@ public class BluetoothConnectionSetup {
         // Cancel any thread currently running a connection
         if (m_connectedThread != null) {m_connectedThread.cancel(); m_connectedThread = null;}
         m_State = STATE_NONE;
+
+        DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                DeviceConnectionStateManager.DEVICE_DISCONNECTED
+        );
         //start();
     }
 
@@ -665,6 +630,9 @@ public class BluetoothConnectionSetup {
         // Cancel any thread currently running a connection
         if (m_connectedThread != null) {m_connectedThread.cancel(); m_connectedThread = null;}
         m_State = STATE_NONE;
+        DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                DeviceConnectionStateManager.DEVICE_DISCONNECTED
+        );
         //start();
     }
 
