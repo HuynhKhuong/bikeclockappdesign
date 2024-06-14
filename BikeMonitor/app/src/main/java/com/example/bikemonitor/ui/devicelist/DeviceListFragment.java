@@ -1,88 +1,101 @@
 package com.example.bikemonitor.ui.devicelist;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.bikemonitor.R;
+import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
 import com.example.bikemonitor.databinding.FragmentDevicelistBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class DeviceListFragment extends Fragment {
-
     private FragmentDevicelistBinding binding;
-//    private class customOnBackPressed extends OnBackPressedCallback{
-//        customOnBackPressed(){
-//            super(true);
-//        }
-//
-//        @Override
-//        public void handleOnBackPressed(){
-//            //by default do nothing
-//            //no Navigator.popStack() is called
-//        }
-//    }
+    private DeviceListLiveViewModel m_ChosenDeviceNotifier;
+    private boolean isDummyTitleCleared = false;
+    /**
+     * Existing devices
+     */
 
-
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-        private final TextView m_textView;
-        public MyViewHolder(View view){
-            super(view);
-            m_textView = (TextView) view.findViewById(R.id.text_View);
-        }
-
-        public TextView getTextView(){
-            return m_textView;
-        }
-    };
-
-    private class CustomAdapter extends RecyclerView.Adapter<MyViewHolder>{
-        private String[] localDataSet;
-        CustomAdapter(){
-            localDataSet = new String[]{"A", "B", "C"};
-        }
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View currentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.devicelist, parent, false);
-            return new MyViewHolder(currentView);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-            holder.getTextView().setText(localDataSet[position]);
-        }
-
-        @Override
-        public int getItemCount() {
-            return localDataSet.length;
-        }
-    }
-
+    private ArrayList<String> m_devicesName = new ArrayList<String>(Arrays.asList(new String[]{"No Device Existing"}));
+    private ArrayAdapter<String> mNewDevicesArrayAdapter;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentDevicelistBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        TextView mScreenTitle = binding.screentitle;
 
-        CustomAdapter myCustomAdapter = new CustomAdapter();
-        RecyclerView rvDrawer = binding.rvDrawer;
-        rvDrawer.setAdapter(myCustomAdapter);
-        rvDrawer.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mScreenTitle.setText("Devices Name");
 
-//        OnBackPressedCallback backGesture = new customOnBackPressed();
-//        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.device_name,m_devicesName);
+        ListView existingDevicesList = binding.existingDevices;
+
+        existingDevicesList.setAdapter(mNewDevicesArrayAdapter);
+
+        m_ChosenDeviceNotifier = new ViewModelProvider(requireActivity()).get(DeviceListLiveViewModel.class);
+
+        m_ChosenDeviceNotifier.getDeviceInfo().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                final int dummyTitleIndex = 0;
+                if(m_ChosenDeviceNotifier.get_hasUserSearchedNewDevice()){
+                    if(!isDummyTitleCleared){
+                        m_devicesName.remove(dummyTitleIndex);
+                        isDummyTitleCleared = true;
+                    }
+
+                    if(!m_devicesName.contains(s)){
+                        m_devicesName.add(s);
+                    }
+                    mNewDevicesArrayAdapter.notifyDataSetChanged();
+                    BluetoothDevice device = BluetoothConnectionSetup.getBluetoothConnectionSetup().getRemoteDevice(
+                            m_ChosenDeviceNotifier.getDeviceMac(), root);
+                    if(device != null){
+                        BluetoothConnectionSetup.getBluetoothConnectionSetup().connect(device, root);
+                    }
+                }
+            }
+        });
+
+
+        Button addButton = binding.addButton;
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(binding.getRoot()).navigate(new NavDirections() {
+                    @Override
+                    public int getActionId() {
+                        return R.id.action_nav_devicelist_to_nav_devicelistdiscover;
+                    }
+
+                    @NonNull
+                    @Override
+                    public Bundle getArguments() {
+                        return null;
+                    }
+                });
+            }
+        });
 
         return root;
     }
@@ -90,6 +103,7 @@ public class DeviceListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        m_ChosenDeviceNotifier.set_hasUserSearchedNewDevice(false);
         binding = null;
     }
 }

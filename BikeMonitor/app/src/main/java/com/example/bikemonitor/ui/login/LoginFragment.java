@@ -203,7 +203,7 @@ public class LoginFragment extends Fragment {
                               if(loginStatus){
                                   m_userInfo.setUserEmail(email);
                                   m_userInfo.setUserPassword(password);
-                                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
+                                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
                               }
                               // Do something with the login status
                               // For example, navigate to another screen

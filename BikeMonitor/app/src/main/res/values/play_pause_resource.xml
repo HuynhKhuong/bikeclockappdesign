@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <!-- geometry -->
+        <integer name="viewport_width">48</integer>
+        <integer name="viewport_height">48</integer>
+        <integer name="viewport_center_x">12</integer>
+        <integer name="viewport_center_y">12</integer>
+<!--        <string name="path_play">M16,24L38,24L27.3,30.8L16,38ZM16,10L27.3,17.2L38,24L16,24Z</string>-->
+<!--        <string name="path_pause">M12,10L20,10L20,38L12,38ZM28,10L36,10L36,38L28,38Z</string>-->
+        <string name="path_play">M16,24 L38,24 L27.3,30.8 L16,38Z M16,10 L27.3,17.2 L38,24 L16,24Z</string>
+        <string name="path_pause">M12,10 L20,10 L20,38 L12,38Z M28,10 L36,10 L36,38 L28,38Z</string>
+        <integer name="stroke_width">2</integer>
+
+        <!-- names -->
+        <string name="play">play</string>
+        <string name="pause">pause</string>
+        <string name="groupPlayPause">groupPlayPause</string>
+
+        <!-- drawing -->
+        <color name="stroke_color">#999</color>
+
+        <!-- timing -->
+        <integer name="duration">450</integer>
+
+</resources>

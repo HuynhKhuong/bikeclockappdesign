@@ -6,23 +6,172 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <include
-        android:id="@+id/logout_from_home"
-        layout="@layout/logout_button"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_displaygroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="116dp">
+        <TextView
+            android:id="@+id/speed_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="170sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+        <TextView
+            android:id="@+id/speed_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintBottom_toBottomOf="@id/speed_value"
+            app:layout_constraintStart_toEndOf="@id/speed_value">
+        </TextView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/text_home"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/additional_information_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/horizontal_divider">
+
+        <TextView
+            android:id="@+id/additional_information_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+        </TextView>
+
+        <TextView
+            android:id="@+id/additional_information_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="40sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintStart_toEndOf="@+id/additional_information_legend"
+            app:layout_constraintTop_toBottomOf="@+id/additional_information_legend"
+            android:layout_marginStart="15dp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/additional_information_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="normal|bold"
+            app:layout_constraintStart_toEndOf="@+id/additional_information_value"
+            app:layout_constraintBottom_toBottomOf="@+id/additional_information_value"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp">
+        </TextView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/horizontal_divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_displaygroup"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:weightSum="12">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="5"
+            android:background="@color/colorPrimary" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/additional_information_selectbutton"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="10dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:icon="@drawable/ic_menu"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/additional_information_layout"
+        app:layout_constraintStart_toStartOf="@+id/additional_information_layout"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/recorder"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:icon="@drawable/ic_play"
+        app:iconSize="100dp"
+        android:paddingStart="3dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/additional_information_selectbutton"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/lockindicator_lock"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:icon="@drawable/ic_lock"
+        app:iconSize="24dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded"
+        app:layout_constraintStart_toEndOf="@id/recorder"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/lockindicator_unlock"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="20dp"
+        app:icon="@drawable/ic_unlocked"
+        app:iconSize="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toEndOf="@id/recorder"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

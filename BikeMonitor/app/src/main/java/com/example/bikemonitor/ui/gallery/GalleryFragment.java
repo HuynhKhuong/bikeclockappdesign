@@ -43,30 +43,11 @@ public class GalleryFragment extends Fragment {
         View root = binding.getRoot();
 
         final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
 
-        LogoutButtonBinding logoutButtonBinding = binding.logoutFromGallery;
-        Button button = logoutButtonBinding.logoutButton;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(binding.getRoot()).navigate(new NavDirections() {
-                    @Override
-                    public int getActionId() {
-                        return R.id.action_nav_gallery_to_nav_login;
-                    }
-
-                    @NonNull
-                    @Override
-                    public Bundle getArguments() {
-                        return null;
-                    }
-                });
-            }
-        });
         return root;
     }
 

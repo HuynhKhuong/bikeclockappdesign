@@ -3,6 +3,7 @@ package com.example.bikemonitor.statemachine;
 import androidx.annotation.NonNull;
 
 public class StateController {
+
   ///Make use of Singleton for file Sharing
   @NonNull
   public StateController getInstance(){
@@ -27,6 +28,15 @@ public class StateController {
     m_currentState.run();
   }
 
+  public interface StatesInterface {
+
+    public void enterState(StateController obj);
+    public void run();
+    public void exitState(StateController obj);
+
+    //leave space for UI Interfacing
+
+  }
 
   ///Constructor
   private StateController(){ 
@@ -39,4 +49,10 @@ public class StateController {
   ///States List
   private StatesInterface m_currentState = null;
 
+  ///States List
+  private StatesInterface m_loginState = null;
+  private StatesInterface m_registerState = null;
+  private StatesInterface m_deviceConnectEstablishState = null;
+  private StatesInterface m_deviceConfigurationState = null;
+  private StatesInterface m_deviceDisplayState = null;
 }

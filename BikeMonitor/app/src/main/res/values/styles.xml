@@ -31,7 +31,7 @@
     </style>
 
     <style name="viewParent.headerText.NoMode">
-        <item name="android:textColor">@color/darkTextColor</item>
+        <item name="android:textColor">@color/whiteTextColor</item>
     </style>
 
     <style name="parent">
@@ -41,7 +41,7 @@
 
     <style name="modifiedEditText" parent="parent">
         <item name="android:textSize">@dimen/newsMoreTextSize</item>
-        <item name="android:backgroundTint">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/login_bk_color</item>
     </style>
 
     <style name="loginButton" parent="viewParent">
