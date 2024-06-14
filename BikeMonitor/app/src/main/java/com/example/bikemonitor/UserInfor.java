@@ -6,6 +6,7 @@ public class UserInfor {
     private String m_userMobileNo;
     private String m_userPassword;
     private String m_userID;
+    private boolean m_logInSuccessSts;
 
     // Recorded class for each user
     public static class RecordedAttribute{
@@ -59,21 +60,23 @@ public class UserInfor {
     }
 
 
-    // UserInfor Constructor for Log-in action
-    public UserInfor (String user_email, String user_password)
-    {
-        m_userEmail = user_email;
-        m_userPassword = user_password;
-    }
-
-    // UserInfor Constructor for Register action
-    public UserInfor (String user_name, String user_email, String user_mobileNo, String user_password)
-    {
-        m_userName = user_name;
-        m_userEmail = user_email;
-        m_userMobileNo = user_mobileNo;
-        m_userPassword = user_password;
-    }
+    // Temporarily not use constructor
+    // UserInfor Constructor for LogIn action
+//    public UserInfor (String user_email, String user_password)
+//    {
+//        m_userEmail = user_email;
+//        m_userPassword = user_password;
+//    }
+//
+//
+//    // UserInfor Constructor for Register action
+//    public UserInfor (String user_name, String user_email, String user_mobileNo, String user_password)
+//    {
+//        m_userName = user_name;
+//        m_userEmail = user_email;
+//        m_userMobileNo = user_mobileNo;
+//        m_userPassword = user_password;
+//    }
     public void setUserName(String user_name)
     {
         this.m_userName = user_name;
@@ -123,5 +126,15 @@ public class UserInfor {
         return m_userID;
     }
 
+    public void setLogInSts(boolean sts)
+    {
+        this.m_logInSuccessSts = sts;
+    }
+    public boolean getLogInSts()
+    {
+        return m_logInSuccessSts;
+    }
+
 
 }
+
