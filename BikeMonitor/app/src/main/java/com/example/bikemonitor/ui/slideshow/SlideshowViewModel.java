@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel;
 
 public class SlideshowViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
-
     public SlideshowViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        m_buttonAnimationStart = new MutableLiveData<Boolean>();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    private MutableLiveData<Boolean> m_buttonAnimationStart;
+
+    public MutableLiveData<Boolean> getbuttonAnimationStart() {
+        return m_buttonAnimationStart;
+    }
+
+    public void setbuttonAnimationStart(Boolean buttonAnimationStart) {
+        this.m_buttonAnimationStart.setValue(buttonAnimationStart);
     }
 }

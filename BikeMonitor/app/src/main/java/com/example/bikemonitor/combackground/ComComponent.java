@@ -8,10 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.bikemonitor.R;
+import com.example.bikemonitor.UserInfor;
 import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
 import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 import com.example.bikemonitor.ui.home.HomeViewModel;
+import com.example.bikemonitor.ui.slideshow.SlideshowFragment;
+import com.example.bikemonitor.ui.slideshow.SlideshowViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
@@ -92,6 +96,32 @@ public class ComComponent {
         try {
             data = new JSONObject().put(firstJsonPackage.get_attributes().getStringDatas(), firstJsonPackage.get_datas().getStringDatas()).
                     put(secondJsonPackage.get_attributes().getStringDatas(), secondJsonPackage.get_datas().getStringDatas()).toString();
+        }
+        catch(org.json.JSONException e){
+            Log.e(TAG, e.toString());
+        }
+        if(data != null){
+            requestSendService(data);
+        }
+        return data;
+    }
+
+    private int m_targetSettingsUpdate = 0;
+
+    public void setTargetSettingsUpdate(int value){m_targetSettingsUpdate = value;}
+    public int getTargetSettingsUpdate(){return m_targetSettingsUpdate;}
+
+
+    public String writeConfig(String key){
+        String data = "";
+        PackageInterface firstJsonPackage = new JsonPackage(AttributesIndex.cmd, AttributesIndex.cmd_commands.wconf);
+        PackageInterface secondJsonPackage = new JsonPackage(AttributesIndex.skey, key);
+        PackageInterface thirdJsonPackage = new JsonPackage(AttributesIndex.wd, "");
+        try {
+            data = new JSONObject().put(firstJsonPackage.get_attributes().getStringDatas(), firstJsonPackage.get_datas().getStringDatas()).
+                    put(secondJsonPackage.get_attributes().getStringDatas(), secondJsonPackage.get_datas().getStringDatas()).
+                    put(thirdJsonPackage.get_attributes().getStringDatas(), m_targetSettingsUpdate).
+                    toString();
         }
         catch(org.json.JSONException e){
             Log.e(TAG, e.toString());
@@ -205,19 +235,36 @@ public class ComComponent {
                 JsonPackage expectedCmd = new JsonPackage(AttributesIndex.cmd, "");
                 JsonPackage expectedRespond = new JsonPackage(AttributesIndex.res, "");
 
+
                 expectedCmd.set_datas(new AttributesIndex.ESP32StringData(
                         root.getString(expectedCmd.get_attributes().getStringDatas())));
 
-                expectedRespond.set_datas(new AttributesIndex.ESP32StringData(
-                        root.getString(expectedRespond.get_attributes().getStringDatas())));
 
-                Log.d(TAG, "res: " + root.getString(expectedRespond.get_attributes().getStringDatas()));
-                if(!expectedRespond.get_datas().getStringDatas().equals("1")){
-                    return;
+                if( (DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                        DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS) &&
+                    (expectedCmd.get_datas().getStringDatas().equals(
+                        AttributesIndex.getAttributesIndex().dataProvider(AttributesIndex.cmd_commands.rconf).
+                                getStringDatas()))) {
+
+                }
+                else{
+
+                        expectedRespond.set_datas(new AttributesIndex.ESP32StringData(
+                                root.getString(expectedRespond.get_attributes().getStringDatas())));
+                        Log.d(TAG, "res: " + root.getString(expectedRespond.get_attributes().getStringDatas()));
+                        if(!expectedRespond.get_datas().getStringDatas().equals("1")){
+                            return;
+                        }
+
                 }
 
-                DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
-                        DeviceConnectionStateManager.DEVICE_ACCEPTED);
+                if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                                DeviceConnectionStateManager.DEVICE_LISTENING ||
+                    DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                                DeviceConnectionStateManager.DEVICE_FORCEUNLOCK){
+                    DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                            DeviceConnectionStateManager.DEVICE_ACCEPTED);
+                }
 
                 Log.d(TAG, "expectedCmd: " + expectedCmd.get_datas().getStringDatas());
 
@@ -238,9 +285,36 @@ public class ComComponent {
                         m_displayPort.setDisplayedCurrentSpeed(root.getInt("spd"));
                         Log.d(TAG, "DisplayedCurrentSpeed: " + root.getString("spd"));
                         m_displayPort.setLockIndicator(root.getBoolean("islock"));
-
-                    }catch(org.json.JSONException e){
+                    }
+                    catch(org.json.JSONException e){
                         Log.e(TAG, e.toString());
+                    }
+                }
+                else if(expectedCmd.get_datas().getStringDatas().equals(
+                        AttributesIndex.getAttributesIndex().dataProvider(AttributesIndex.cmd_commands.rconf).
+                                getStringDatas())){
+                    try {
+                        /// Hardcoded work around due to short timeline
+                        /// Later refactor would be planned
+                        if(m_targetSettingsUpdate == root.getInt("wd")){
+                            DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                                    DeviceConnectionStateManager.DEVICE_ACCEPTED);
+                            Snackbar notificationBar = Snackbar.make(
+                                    m_currentParentActivity.findViewById(R.id.drawer_layout),
+                                    "Write Successfully",
+                                    5000);
+                            notificationBar.show();
+
+                            SlideshowViewModel uiNotifier = new ViewModelProvider(m_currentParentActivity).get(SlideshowViewModel.class);
+                            uiNotifier.setbuttonAnimationStart(true);
+                        }
+                        else
+                        {
+                            //do nothing
+                        }
+                    }
+                    catch(org.json.JSONException e){
+                            Log.e(TAG, e.toString());
                     }
                 }
             }

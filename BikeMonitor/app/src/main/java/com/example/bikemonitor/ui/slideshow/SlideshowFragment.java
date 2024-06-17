@@ -1,5 +1,6 @@
 package com.example.bikemonitor.ui.slideshow;
 
+import android.bluetooth.BluetoothClass;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -22,6 +24,7 @@ import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup
 import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentSlideshowBinding;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
+import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,14 +49,7 @@ public class SlideshowFragment extends Fragment {
     private final AdapterView.OnItemSelectedListener mOptionClickListener = new AdapterView.OnItemSelectedListener() {
 
         public void onItemSelected(AdapterView<?> av, View v, int arg2, long arg3) {
-            ////Check current Connection State
-            if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
-                    DeviceConnectionStateManager.DEVICE_ACCEPTED){
-                DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
-                        DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS
-                );
-                ComComponent.getComComponent().writeConfig("11111111", Integer.toString(arg2));
-            }
+                ComComponent.getComComponent().setTargetSettingsUpdate(arg2);
         }
 
         @Override
@@ -75,7 +71,7 @@ public class SlideshowFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
+                new ViewModelProvider(requireActivity()).get(SlideshowViewModel.class);
 
         binding = FragmentSlideshowBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -87,9 +83,29 @@ public class SlideshowFragment extends Fragment {
         wheelSizeOptionList.setOnItemSelectedListener(mOptionClickListener);
 
         final TextView textView = binding.textSlideshow;
+        CircularProgressButton setupButton = binding.cirSetupButton;
+        setupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupButton.startAnimation();
+                ////Check current Connection State
+                if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                        DeviceConnectionStateManager.DEVICE_ACCEPTED){
+                    DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                            DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS
+                    );
+                }
 
+            }
+        });
 
-        //slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        slideshowViewModel.getbuttonAnimationStart().observe(getViewLifecycleOwner(),
+                new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        setupButton.revertAnimation();
+                    }
+        });
 
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
