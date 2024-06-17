@@ -67,6 +67,19 @@
         android:background="@color/white"
         android:layout_marginTop="10dp"/>
 
+    <com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton
+        android:id="@+id/cirSetupButton"
+        style="@style/loginButton"
+        app:spinning_bar_width="4dp"
+        app:spinning_bar_color="#FFF"
+        android:text="Setup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_slideshow"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        app:initialCornerAngle="27dp"
+        app:spinning_bar_padding="6dp"/>
     
     <TextView
         android:id="@+id/text_slideshow"

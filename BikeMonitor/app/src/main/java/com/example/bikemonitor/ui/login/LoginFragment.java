@@ -168,7 +168,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         LoginViewModel loginViewModel =
-                new ViewModelProvider(this).get(LoginViewModel.class);
+                new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -219,7 +219,7 @@ public class LoginFragment extends Fragment {
                   }
 
                   ///move to other state
-                  binding.cirLoginButton.stopAnimation();
+                  binding.cirLoginButton.revertAnimation();
 
                   //Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
               }

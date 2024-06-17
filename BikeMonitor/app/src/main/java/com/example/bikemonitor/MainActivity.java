@@ -4,30 +4,22 @@ import static androidx.core.app.ActivityCompat.startActivityForResult;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
-import android.os.UserHandle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
 import com.example.bikemonitor.bluetoothbackgroundsetup.BluetoothConnectionSetup;
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.bluetoothbackgroundsetup.UserErrorHandler;
 import com.example.bikemonitor.combackground.ComComponent;
-import com.example.bikemonitor.combackground.JsonPackage;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
+import com.example.bikemonitor.ui.slideshow.SlideshowViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
@@ -37,16 +29,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
@@ -127,9 +117,16 @@ public class MainActivity extends AppCompatActivity {
 
     //Timer implementation
     private long startTimeMillis = 0;
+    private class TimerRunnable implements Runnable{
+        public TimerRunnable(AppCompatActivity currentParentActivity){
+            super();
+            m_currentParentActivity = currentParentActivity;
+        }
 
-    Handler timerCollapseHandler = new Handler();
-    Runnable timerRunnable = new Runnable(){
+        private AppCompatActivity m_currentParentActivity;
+        private int numberOfRequests = 0;
+        private int currentNumberOfRequest = 0;
+        private boolean sendConfigAttempt = true;
         @Override
         public void run(){
             //background cyclic transmission
@@ -138,33 +135,94 @@ public class MainActivity extends AppCompatActivity {
                 case DeviceConnectionStateManager.DEVICE_DISCONNECTED:
                     //no transmission
                     //clean up data connection
+                    numberOfRequests = 0;
+                    currentNumberOfRequest = 0;
+                    sendConfigAttempt = true;
                     ComComponent.getComComponent().cleanServiceQueue();
                     break;
 
                 case DeviceConnectionStateManager.DEVICE_ACCEPTED:
                     //cyclic transmission
                     //default payload is read current data
+                    numberOfRequests = 0;
+                    currentNumberOfRequest = 0;
+                    sendConfigAttempt = true;
                     ComComponent.getComComponent().readCurrentData("11111111");
                     ComComponent.getComComponent().sendRawPayload();
                     break;
                 case DeviceConnectionStateManager.DEVICE_LISTENING:
                     //cyclic initiate transmission attempts
+                    numberOfRequests = 0;
+                    currentNumberOfRequest = 0;
+                    sendConfigAttempt = true;
                     ComComponent.getComComponent().cleanServiceQueue();
                     ComComponent.getComComponent().initiateConnectWithoutKey();
                     ComComponent.getComComponent().sendRawPayload();
                     break;
                 case DeviceConnectionStateManager.DEVICE_FORCEUNLOCK:
                     Log.d("" , "Current Device Connection State " + Integer.toString(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState()));
-                    ComComponent.getComComponent().cleanServiceQueue();
-                    ComComponent.getComComponent().unlockWithKey("11111111");
-                    ComComponent.getComComponent().sendRawPayload();
+                    numberOfRequests = 5;
+                    if(currentNumberOfRequest < numberOfRequests){
+                        currentNumberOfRequest++;
+                        ComComponent.getComComponent().cleanServiceQueue();
+                        ComComponent.getComComponent().unlockWithKey("11111111");
+                        ComComponent.getComComponent().sendRawPayload();
+                    }
+                    else{
+                        ///Request attempts exceeds the maximum allowed number;
+                        ///Return to previous state
+                        DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                                DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS); //Dummy argument
+                        currentNumberOfRequest = 0;
+                        numberOfRequests = 0;
+                    }
+                    break;
+                case DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS:
+                    numberOfRequests = 5;
+                    if(currentNumberOfRequest < numberOfRequests){
+                        currentNumberOfRequest++;
+                        if(sendConfigAttempt){
+                            ComComponent.getComComponent().cleanServiceQueue();
+                            ComComponent.getComComponent().writeConfig("11111111");
+                            ComComponent.getComComponent().sendRawPayload();
+                            sendConfigAttempt = false;
+                        }
+                        else{
+                            ComComponent.getComComponent().cleanServiceQueue();
+                            ComComponent.getComComponent().readConfig("11111111");
+                            ComComponent.getComComponent().sendRawPayload();
+                            sendConfigAttempt = true;
+                        }
+                    }
+                    else{
+                        ///Request attempts exceeds the maximum allowed number;
+                        ///Return to previous state
+                        DeviceConnectionStateManager.getDeviceConnectionStateManager().updateState(
+                                DeviceConnectionStateManager.DEVICE_ACCEPTED_UPDATESETTINGS); //Dummy argument
+                        currentNumberOfRequest = 0;
+                        numberOfRequests = 0;
+                        sendConfigAttempt = true;
+
+                        Snackbar errorSnackbar = Snackbar.make(
+                                binding.drawerLayout,
+                                "Settings update failed",
+                                5000);
+                        errorSnackbar.show();
+
+
+                        SlideshowViewModel uiNotifier = new ViewModelProvider(m_currentParentActivity).get(SlideshowViewModel.class);
+                        uiNotifier.setbuttonAnimationStart(true);
+                    }
                 default:
                     break;
             }
             //Reschedule timer 500ms
             timerCollapseHandler.postDelayed(this, 500);
         }
-    };
+    }
+
+    Handler timerCollapseHandler = new Handler();
+    TimerRunnable timerRunnable = new TimerRunnable(this);
 
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new UserHandler(this);

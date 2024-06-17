@@ -20,7 +20,8 @@ public class DeviceConnectionStateManager{
   public void updateState(int nextState){
     if(nextState > DEVICE_ACCEPTED_UPDATESETTINGS) return;
 
-    if(currentState == DEVICE_FORCEUNLOCK){
+    if(currentState == DEVICE_FORCEUNLOCK ||
+        currentState == DEVICE_ACCEPTED_UPDATESETTINGS){
       currentState = lastState;
     }
     else{
@@ -36,6 +37,7 @@ public class DeviceConnectionStateManager{
   public static final int DEVICE_FORCEUNLOCK = 3;
   private int currentState;
   private int lastState;
+  private int m_targetSettingsUpdate = 0;
 
   private static DeviceConnectionStateManager obj;
 }
