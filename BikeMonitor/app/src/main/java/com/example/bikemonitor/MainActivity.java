@@ -30,6 +30,9 @@ import com.example.bikemonitor.combackground.JsonPackage;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         private byte[] currentReceivedPayload = new byte[1024];
         private int receivedDLC = 0;
         private boolean payloadReceived = true;
+        // Obtain the DataContainerViewModel instance
+
         UserHandler(AppCompatActivity currentParentActivity){
             super();
             m_currentParentActivity = currentParentActivity;
@@ -168,6 +173,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DataContainer userInfoContainerViewModel = new ViewModelProvider(this).get(DataContainer.class);
+
+        // Observe changes in UserInfo MutableLiveData
+        userInfoContainerViewModel.getCurrentUserInfo().observe(this, new Observer<UserInfor>() {
+            @Override
+            public void onChanged(UserInfor userInfo) {
+                if (userInfo != null) {
+                    Log.i("Test", "email: " + userInfo.getUserEmail());
+                }
+            }
+        });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

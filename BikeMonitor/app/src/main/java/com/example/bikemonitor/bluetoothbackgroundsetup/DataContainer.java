@@ -8,6 +8,7 @@ import com.example.bikemonitor.UserInfor;
 public class DataContainer extends ViewModel {
     final int g_payloadSize = 1024;
     private MutableLiveData<UserInfor.RecordedAttribute> currentDeviceInfo = new MutableLiveData<UserInfor.RecordedAttribute>();
+    private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
 
     public void setReceivedPayload(UserInfor.RecordedAttribute receivedPayload) {
         this.currentDeviceInfo.setValue(receivedPayload);
@@ -15,5 +16,13 @@ public class DataContainer extends ViewModel {
 
     public MutableLiveData<UserInfor.RecordedAttribute> getReceivedPayload() {
         return currentDeviceInfo;
+    }
+
+    public void setCurrentUserInfo(UserInfor userinfo) {
+        this.currentUserInfo.setValue(userinfo);
+    }
+
+    public MutableLiveData<UserInfor> getCurrentUserInfo() {
+        return currentUserInfo;
     }
 }

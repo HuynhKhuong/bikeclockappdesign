@@ -32,6 +32,7 @@ import com.example.bikemonitor.databinding.FragmentLoginBinding;
 
 import com.example.bikemonitor.UserInfor;
 import java.util.Objects;
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 
 public class LoginFragment extends Fragment {
     private FragmentLoginBinding binding;
@@ -52,6 +53,7 @@ public class LoginFragment extends Fragment {
     final int e_userLogInSuccessfully = 6;
 
     private UserInfor m_userInfo;
+    private DataContainer UserInfoContainerViewModel;
 
     public interface FirebaseCallback {
         void onLoginStatusChanged(boolean loginStatus, String email, String password);
@@ -177,6 +179,8 @@ public class LoginFragment extends Fragment {
         TextView m_passwordText = binding.editTextPassword;
         m_userInfo = new UserInfor();
 
+        UserInfoContainerViewModel = new ViewModelProvider(this).get(DataContainer.class);
+
         binding.cirLoginButton.setOnClickListener(
         new View.OnClickListener() {
               @Override
@@ -203,6 +207,7 @@ public class LoginFragment extends Fragment {
                               if(loginStatus){
                                   m_userInfo.setUserEmail(email);
                                   m_userInfo.setUserPassword(password);
+                                  UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
                                   Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
                               }
                               // Do something with the login status
