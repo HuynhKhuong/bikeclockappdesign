@@ -268,6 +268,16 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavigationUI.setupWithNavController(bottomNav , navController);
 
+        DataContainer m_cloudContainer = new ViewModelProvider(this).get(DataContainer.class);
+        m_cloudContainer.getCurrentUserInfo().observe(this,
+                new Observer<UserInfor>(){
+                    @Override
+                    public void onChanged(UserInfor userInfor) {
+
+                        Log.i(" ", "CHANGED!");
+                    }
+        });
+
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {

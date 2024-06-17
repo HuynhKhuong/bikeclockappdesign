@@ -179,7 +179,7 @@ public class LoginFragment extends Fragment {
         TextView m_passwordText = binding.editTextPassword;
         m_userInfo = new UserInfor();
 
-        UserInfoContainerViewModel = new ViewModelProvider(this).get(DataContainer.class);
+        UserInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
         binding.cirLoginButton.setOnClickListener(
         new View.OnClickListener() {
