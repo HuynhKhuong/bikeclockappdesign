@@ -40,14 +40,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private class UserHandler extends Handler{
         private AppCompatActivity m_currentParentActivity;
+        private DatabaseReference mDatabase;
         private byte[] currentReceivedPayload = new byte[1024];
         private int receivedDLC = 0;
         private boolean payloadReceived = true;
         // Obtain the DataContainerViewModel instance
+
 
         UserHandler(AppCompatActivity currentParentActivity){
             super();
@@ -227,25 +235,27 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new UserHandler(this);
 
+
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         DataContainer userInfoContainerViewModel = new ViewModelProvider(this).get(DataContainer.class);
-
         // Observe changes in UserInfo MutableLiveData
         userInfoContainerViewModel.getCurrentUserInfo().observe(this, new Observer<UserInfor>() {
             @Override
             public void onChanged(UserInfor userInfo) {
                 if (userInfo != null) {
                     Log.i("Test", "email: " + userInfo.getUserEmail());
+                    // Data may be changed will be handled here to push into cloud
                 }
             }
         });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         ///Background components Initialize
         ///1.Initialize ComComponent Object
@@ -260,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
         ///UI Related Initialize
         setSupportActionBar(binding.toolbar);
         ActionBar mainBar = getSupportActionBar();
+
 
         NavHostFragment hostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(
                                         R.id.nav_host_fragment_content_main);
