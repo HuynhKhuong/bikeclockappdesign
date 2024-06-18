@@ -14,8 +14,8 @@
             android:pathData="@string/path_pause"
             android:strokeWidth="@integer/stroke_width"
             android:strokeLineCap="square"
-            android:strokeColor="@color/black"
-            android:fillColor="@color/black"/>
+            android:strokeColor="@color/white"
+            android:fillColor="@color/white"/>
 
     </group>
 

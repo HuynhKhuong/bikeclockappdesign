@@ -14,17 +14,35 @@ public class UserInfor {
         private int m_userAvrVelocity;
         private int m_userDateRecorded;
         private int m_userTimeRecorded;
-        private int m_userDevice;
+        private String m_userDevice;
         private int m_order;
+        // minute at the recorded time
+        private int m_minRec;
 
-        public RecordedAttribute(int order, int distance, int avr_velo, int date, int time, int device)
+        // hour at the recorded time
+        private int m_hourRec;
+        // Day at the recorded time
+        private int m_dayRec;
+        // month at the recorded time
+        private int m_monRec;
+        private String m_userDevAddress;
+
+        // Indicate device registered status
+        private boolean m_DevRegisteredSts;
+
+
+        public RecordedAttribute(String devicename, String device_addr,
+                                 int distance, int avr_velo,
+                                 int mon, int day, int hour, int min)
         {
-            this.m_order = order;
+            this.m_userDevice = devicename;
+            this.m_userDevAddress = device_addr;
             this.m_userDistance = distance;
             this.m_userAvrVelocity = avr_velo;
-            this.m_userDateRecorded = date;
-            this.m_userTimeRecorded = time;
-            this.m_userDevice = device;
+            this.m_monRec = mon;
+            this.m_dayRec = day;
+            this.m_hourRec = hour;
+            this.m_minRec = min;
         }
 
         public int getUserDistance()
@@ -47,7 +65,7 @@ public class UserInfor {
             return m_userTimeRecorded;
         }
 
-        public int getUserDevice()
+        public String getUserDevice()
         {
             return m_userDevice;
         }
@@ -55,6 +73,51 @@ public class UserInfor {
         public int getOrder()
         {
             return m_order;
+        }
+        public int getMinRec()
+        {
+            return m_minRec;
+        }
+        public int getHourRec()
+        {
+            return m_hourRec;
+        }
+        public int getDayRec()
+        {
+            return m_dayRec;
+        }
+        public int getMonRec()
+        {
+            return m_monRec;
+        }
+        public String getDevAddr()
+        {
+            return m_userDevAddress;
+        }
+
+        public boolean getDevRegSts(){return m_DevRegisteredSts;}
+
+        public void setMinRec(int min){
+            this.m_minRec = min;
+        }
+
+        public void setHourRec(int hour){
+            this.m_hourRec = hour;
+        }
+        public void setDayRec(int day){
+            this.m_dayRec = day;
+        }
+        public void setMonRec(int mon){
+            this.m_monRec = mon;
+        }
+        public void setDevAddress(String devAddr){
+            this.m_userDevAddress = devAddr;
+        }
+        public void setUserDevice(String usrDev){
+            this.m_userDevice = usrDev;
+        }
+        public void setDevRegSts(boolean sts){
+            this.m_DevRegisteredSts = sts;
         }
 
     }

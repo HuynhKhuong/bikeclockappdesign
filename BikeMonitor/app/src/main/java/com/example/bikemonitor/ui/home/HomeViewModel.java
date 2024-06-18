@@ -16,6 +16,8 @@ public class HomeViewModel extends ViewModel {
         m_additionalTripDisplay = new MutableLiveData<Integer>();
         m_addtionalAverageSpeedDisplay = new MutableLiveData<Double>();
         m_addtionalTimeDisplay = new MutableLiveData<Integer>();
+        m_recorderStartFlag = new MutableLiveData<Boolean>();
+        m_recorderStartFlag.setValue(false);
     }
 
     private final String[] m_displayUnit = new String[]{"km", "km", "km/h", "HH:MM", "km/h"};
@@ -31,6 +33,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Double> m_addtionalAverageSpeedDisplay;
     private final MutableLiveData<Integer> m_addtionalTimeDisplay;
     private final MutableLiveData<Boolean> m_lockStatusDisplay;
+    private final MutableLiveData<Boolean> m_recorderStartFlag;
     public static final int odoIndex = 0;
     public static final int tripIndex = 1;
     public static final int avgSpdIndex = 2;
@@ -205,6 +208,10 @@ public class HomeViewModel extends ViewModel {
     public void setLockIndicator(boolean status){
         m_lockStatusDisplay.setValue(status);
     }
+    public void setRecorderStartFlag(Boolean status){m_recorderStartFlag.setValue(status);}
+    public MutableLiveData<Boolean> getRecorderStartFlag() {
+        return m_recorderStartFlag;
+    }
 
     public MutableLiveData<Integer> getCurrentIndex(){
         return m_displayItem;
@@ -226,6 +233,8 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Double> getAdditionalAvgSpdDisplay(){
         return m_addtionalAverageSpeedDisplay;
     }
+
+
     public MutableLiveData<Integer> getAdditionalTimeDisplay(){
         return m_addtionalTimeDisplay;
     }
