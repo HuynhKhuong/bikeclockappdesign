@@ -41,6 +41,8 @@ public class LoginFragment extends Fragment {
 
     // userEmail, userPassword from firebase
     public String f_userEmail, f_userPassword;
+    public boolean f_devRegSts;
+    public String f_devAddr;
     private int logIn_status;
 
     // Enumerate status of email, password
@@ -53,10 +55,13 @@ public class LoginFragment extends Fragment {
     final int e_userLogInSuccessfully = 6;
 
     private UserInfor m_userInfo;
+    private UserInfor.RecordedAttribute m_recAttribute;
     private DataContainer UserInfoContainerViewModel;
+    private DataContainer DeviceInfoContainerViewModel;
 
     public interface FirebaseCallback {
-        void onLoginStatusChanged(boolean loginStatus, String email, String password);
+        void onLoginStatusChanged(boolean loginStatus, String email, String password,
+                                  boolean devRegSts, String devAddr);
     }
 
     private void VerifyDataWithFirebase(DatabaseReference dtbRef, String userID,
@@ -67,6 +72,8 @@ public class LoginFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 f_userEmail = dataSnapshot.child(userID).child("Email").getValue(String.class);
                 f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
+                f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(boolean.class);
+                f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
                 if (!Objects.equals(userEmail, f_userEmail)){
                     alertAction(e_EmailNotRegistered);
                     m_user.setLogInSts(false);
@@ -78,7 +85,7 @@ public class LoginFragment extends Fragment {
                 else{
                     m_user.setLogInSts(true);
                 }
-                callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword);
+                callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -178,8 +185,10 @@ public class LoginFragment extends Fragment {
         TextView m_emailText = binding.editTextEmail;
         TextView m_passwordText = binding.editTextPassword;
         m_userInfo = new UserInfor();
+        UserInfor.RecordedAttribute m_recAttribute = new UserInfor.RecordedAttribute();
 
         UserInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
+        DeviceInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
         binding.cirLoginButton.setOnClickListener(
         new View.OnClickListener() {
@@ -203,11 +212,17 @@ public class LoginFragment extends Fragment {
                       l_userID = l_email.split("@")[0];
                       VerifyDataWithFirebase(m_Ref, l_userID, l_email, l_password, m_userInfo, new FirebaseCallback() {
                           @Override
-                          public void onLoginStatusChanged(boolean loginStatus, String email, String password) {
+                          public void onLoginStatusChanged(boolean loginStatus, String email, String password, boolean devRegSts, String devAddr) {
                               if(loginStatus){
+
                                   m_userInfo.setUserEmail(email);
                                   m_userInfo.setUserPassword(password);
+                                  m_recAttribute.setUserDevice("Willen");
+                                  m_recAttribute.setDevRegSts(devRegSts);
+                                  m_recAttribute.setDevAddress(devAddr);
                                   UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
+                                  DeviceInfoContainerViewModel.setCloudData(m_recAttribute);
+
                                   Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
                               }
                               // Do something with the login status

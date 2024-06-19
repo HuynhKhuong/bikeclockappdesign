@@ -31,19 +31,20 @@ public class UserInfor {
         private boolean m_DevRegisteredSts;
 
 
-        public RecordedAttribute(String devicename, String device_addr,
-                                 int distance, int avr_velo,
-                                 int mon, int day, int hour, int min)
-        {
-            this.m_userDevice = devicename;
-            this.m_userDevAddress = device_addr;
-            this.m_userDistance = distance;
-            this.m_userAvrVelocity = avr_velo;
-            this.m_monRec = mon;
-            this.m_dayRec = day;
-            this.m_hourRec = hour;
-            this.m_minRec = min;
-        }
+//        public RecordedAttribute(String devicename, String device_addr,
+//                                 int distance, int avr_velo,
+//                                 int mon, int day, int hour, int min)
+//        {
+//            this.m_userDevice = devicename;
+//            this.m_userDevAddress = device_addr;
+//            this.m_userDistance = distance;
+//            this.m_userAvrVelocity = avr_velo;
+//            this.m_monRec = mon;
+//            this.m_dayRec = day;
+//            this.m_hourRec = hour;
+//            this.m_minRec = min;
+//        }
+
 
         public int getUserDistance()
         {
