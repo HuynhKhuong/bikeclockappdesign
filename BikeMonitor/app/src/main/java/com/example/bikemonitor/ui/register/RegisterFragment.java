@@ -212,6 +212,7 @@ public class RegisterFragment extends Fragment {
                         m_Ref.child(m_userID).child("DevList").child("Willen").child("MonRec").setValue(0);
                         m_Ref.child(m_userID).child("DevList").child("Willen").child("DevAddr").setValue("");
                         m_Ref.child(m_userID).child("DevList").child("Willen").child("DevName").setValue("");
+                        m_Ref.child(m_userID).child("DevList").child("Willen").child("ActivePeriod").setValue(0);
                         alertAction(successfullyReg);
                     }
 

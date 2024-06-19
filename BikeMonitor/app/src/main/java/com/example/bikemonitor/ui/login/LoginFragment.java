@@ -222,7 +222,7 @@ public class LoginFragment extends Fragment {
                                   m_userInfo.setUserEmail(email);
                                   m_userInfo.setUserPassword(password);
                                   m_userInfo.setUserID(email.split("@")[0]);
-                                  m_recAttribute.setUserDevice("Willen");
+                                  m_recAttribute.setUserDevice(DeviceInfoContainerViewModel.getCloudData().getUserDevice());
                                   m_recAttribute.setDevRegSts(devRegSts);
                                   m_recAttribute.setDevAddress(devAddr);
                                   UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);

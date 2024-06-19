@@ -29,21 +29,7 @@ public class UserInfor {
 
         // Indicate device registered status
         private boolean m_DevRegisteredSts;
-
-
-//        public RecordedAttribute(String devicename, String device_addr,
-//                                 int distance, int avr_velo,
-//                                 int mon, int day, int hour, int min)
-//        {
-//            this.m_userDevice = devicename;
-//            this.m_userDevAddress = device_addr;
-//            this.m_userDistance = distance;
-//            this.m_userAvrVelocity = avr_velo;
-//            this.m_monRec = mon;
-//            this.m_dayRec = day;
-//            this.m_hourRec = hour;
-//            this.m_minRec = min;
-//        }
+        private double m_activePeriod;
 
 
         public int getUserDistance()
@@ -97,6 +83,7 @@ public class UserInfor {
         }
 
         public boolean getDevRegSts(){return m_DevRegisteredSts;}
+        public double getActivePeriod(){return m_activePeriod;}
 
         public void setMinRec(int min){
             this.m_minRec = min;
@@ -119,6 +106,9 @@ public class UserInfor {
         }
         public void setDevRegSts(boolean sts){
             this.m_DevRegisteredSts = sts;
+        }
+        public void setActivePeriod(double deltatime){
+            this.m_activePeriod = deltatime;
         }
 
     }
