@@ -11,30 +11,44 @@ public class UserInfor {
     // Recorded class for each user
     public static class RecordedAttribute{
         private int m_userDistance;
-        private int m_userAvrVelocity;
+        private double m_userAvrVelocity;
         private int m_userDateRecorded;
         private int m_userTimeRecorded;
-        private int m_userDevice;
+        private String m_userDevice;
         private int m_order;
+        // minute at the recorded time
+        private int m_minRec;
 
-        public RecordedAttribute(int order, int distance, int avr_velo, int date, int time, int device)
-        {
-            this.m_order = order;
-            this.m_userDistance = distance;
-            this.m_userAvrVelocity = avr_velo;
-            this.m_userDateRecorded = date;
-            this.m_userTimeRecorded = time;
-            this.m_userDevice = device;
-        }
+        // hour at the recorded time
+        private int m_hourRec;
+        // Day at the recorded time
+        private int m_dayRec;
+        // month at the recorded time
+        private int m_monRec;
+        private String m_userDevAddress;
+
+        // Indicate device registered status
+        private boolean m_DevRegisteredSts;
+        private double m_activePeriod;
+
 
         public int getUserDistance()
         {
             return m_userDistance;
         }
 
-        public int getUserAverageVelocity()
+        public void setUserDistance(int data)
+        {
+            m_userDistance = data;
+        }
+        public double getUserAverageVelocity()
         {
             return m_userAvrVelocity;
+        }
+
+        public void setUserAverageVelocity(double data)
+        {
+            m_userAvrVelocity = data;
         }
 
         public int getUserDateRecorded()
@@ -47,7 +61,7 @@ public class UserInfor {
             return m_userTimeRecorded;
         }
 
-        public int getUserDevice()
+        public String getUserDevice()
         {
             return m_userDevice;
         }
@@ -55,6 +69,55 @@ public class UserInfor {
         public int getOrder()
         {
             return m_order;
+        }
+        public int getMinRec()
+        {
+            return m_minRec;
+        }
+        public int getHourRec()
+        {
+            return m_hourRec;
+        }
+        public int getDayRec()
+        {
+            return m_dayRec;
+        }
+        public int getMonRec()
+        {
+            return m_monRec;
+        }
+        public String getDevAddr()
+        {
+            return m_userDevAddress;
+        }
+
+        public boolean getDevRegSts(){return m_DevRegisteredSts;}
+        public double getActivePeriod(){return m_activePeriod;}
+
+        public void setMinRec(int min){
+            this.m_minRec = min;
+        }
+
+        public void setHourRec(int hour){
+            this.m_hourRec = hour;
+        }
+        public void setDayRec(int day){
+            this.m_dayRec = day;
+        }
+        public void setMonRec(int mon){
+            this.m_monRec = mon;
+        }
+        public void setDevAddress(String devAddr){
+            this.m_userDevAddress = devAddr;
+        }
+        public void setUserDevice(String usrDev){
+            this.m_userDevice = usrDev;
+        }
+        public void setDevRegSts(boolean sts){
+            this.m_DevRegisteredSts = sts;
+        }
+        public void setActivePeriod(double deltatime){
+            this.m_activePeriod = deltatime;
         }
 
     }

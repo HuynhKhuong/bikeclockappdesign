@@ -6,19 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
-import com.example.bikemonitor.R;
-import com.example.bikemonitor.combackground.ComComponent;
+import java.util.Calendar;
+
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.databinding.FragmentHomeBinding;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
+import com.example.bikemonitor.ui.gallery.GalleryViewModel;
 
 public class HomeFragment extends Fragment {
 
@@ -34,11 +35,16 @@ public class HomeFragment extends Fragment {
         }
     }
     private FragmentHomeBinding binding;
+    private double startRecordTimeStamp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        DataContainer cloudPort =
+                new ViewModelProvider(requireActivity()).get(DataContainer.class);
+        GalleryViewModel reportDisplayPort =
+                new ViewModelProvider(requireActivity()).get(GalleryViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -132,6 +138,63 @@ public class HomeFragment extends Fragment {
             }
         }});
 
+        Button recordButtonPlay = binding.recorderStart;
+        Button recordButtonPause = binding.recorderStop;
+
+        recordButtonPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //user pressed pause recoding
+                Calendar timeStampOnClockPauseButton = Calendar.getInstance();
+                double timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
+                cloudPort.getCloudData().setActivePeriod(timeDuration);
+
+                cloudPort.getCloudData().setUserDistance(
+                        cloudPort.getCloudData().getUserDistance() -
+                        homeViewModel.getAdditionalOdoDisplay().getValue());
+
+                cloudPort.notifyDataChange();
+                reportDisplayPort.notifyDataChange();
+                homeViewModel.setRecorderStartFlag(false);
+            }
+        });
+
+        recordButtonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                        DeviceConnectionStateManager.DEVICE_ACCEPTED){
+                    //user pressed play recording
+                    Calendar timeStampOnClickPlayButton = Calendar.getInstance();
+                    startRecordTimeStamp = timeStampOnClickPlayButton.get(Calendar.MINUTE);
+                    cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
+                    cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
+                    cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
+                    cloudPort.getCloudData().setMinRec(timeStampOnClickPlayButton.get(Calendar.MINUTE));
+
+                    cloudPort.getCloudData().setUserDistance(homeViewModel.getAdditionalOdoDisplay().getValue());
+                    cloudPort.notifyDataChange();
+                    reportDisplayPort.notifyDataChange();
+                    homeViewModel.setRecorderStartFlag(true);
+                }
+            }
+        });
+
+        homeViewModel.getRecorderStartFlag().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    //recorder play
+                    recordButtonPause.setVisibility(View.VISIBLE);
+                    recordButtonPlay.setVisibility(View.GONE);
+                }
+                else{
+                    //recorder pause
+                    recordButtonPause.setVisibility(View.GONE);
+                    recordButtonPlay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
 

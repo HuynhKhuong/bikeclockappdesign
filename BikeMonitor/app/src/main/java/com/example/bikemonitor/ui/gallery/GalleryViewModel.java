@@ -6,14 +6,21 @@ import androidx.lifecycle.ViewModel;
 
 public class GalleryViewModel extends ViewModel {
 
-    private final MutableLiveData<String> mText;
+    private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
+    private boolean isFirstStartup = true;
 
-    public GalleryViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+    public void notifyDataChange(){
+        if(isFirstStartup){
+            isFirstStartup = false;
+            dataChangeNotify.setValue(true);
+        }
+        else{
+            boolean currentDummyStatus = dataChangeNotify.getValue();
+            dataChangeNotify.setValue(!currentDummyStatus);
+        }
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public MutableLiveData<Boolean> getDataChangeNotifier(){
+        return dataChangeNotify;
     }
 }

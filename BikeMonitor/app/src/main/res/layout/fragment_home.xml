@@ -122,7 +122,7 @@
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/recorder"
+        android:id="@+id/recorder_start"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:insetLeft="0dp"
@@ -140,6 +140,25 @@
         app:layout_constraintRight_toRightOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/recorder_stop"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:icon="@drawable/ic_pause"
+        app:iconSize="70dp"
+        android:paddingTop="5dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/additional_information_selectbutton"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/lockindicator_lock"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -153,7 +172,7 @@
         android:paddingEnd="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded"
-        app:layout_constraintStart_toEndOf="@id/recorder"
+        app:layout_constraintStart_toEndOf="@id/recorder_start"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.button.MaterialButton
@@ -171,7 +190,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/additional_information_selectbutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toEndOf="@id/recorder"
+        app:layout_constraintStart_toEndOf="@id/recorder_start"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

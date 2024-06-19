@@ -7,13 +7,49 @@ import com.example.bikemonitor.UserInfor;
 
 public class DataContainer extends ViewModel {
     final int g_payloadSize = 1024;
-    private MutableLiveData<UserInfor.RecordedAttribute> currentDeviceInfo = new MutableLiveData<UserInfor.RecordedAttribute>();
+    private UserInfor.RecordedAttribute currentDeviceInfo = new UserInfor.RecordedAttribute();
+    private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
+    private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
+    private boolean isFirstStartup = true;
+    private boolean loginDone = false;
 
-    public void setReceivedPayload(UserInfor.RecordedAttribute receivedPayload) {
-        this.currentDeviceInfo.setValue(receivedPayload);
+    public void setCloudData(UserInfor.RecordedAttribute receivedPayload) {
+        this.currentDeviceInfo = receivedPayload;
     }
 
-    public MutableLiveData<UserInfor.RecordedAttribute> getReceivedPayload() {
+    public UserInfor.RecordedAttribute getCloudData() {
         return currentDeviceInfo;
+    }
+
+    public void notifyDataChange(){
+        if(isFirstStartup){
+            isFirstStartup = false;
+            dataChangeNotify.setValue(true);
+        }
+        else{
+            boolean currentDummyStatus = dataChangeNotify.getValue();
+            dataChangeNotify.setValue(!currentDummyStatus);
+        }
+
+    }
+
+    public MutableLiveData<Boolean> getDataChangeNotifier(){
+        return dataChangeNotify;
+    }
+
+    public void setCurrentUserInfo(UserInfor userinfo) {
+        this.currentUserInfo.setValue(userinfo);
+    }
+
+    public MutableLiveData<UserInfor> getCurrentUserInfo() {
+        return currentUserInfo;
+    }
+
+    public void setLoginStatus(boolean status){
+        loginDone = status;
+    }
+
+    public boolean getLoginStatus(){
+        return loginDone;
     }
 }

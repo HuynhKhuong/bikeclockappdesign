@@ -22,6 +22,9 @@ import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 import com.example.bikemonitor.ui.slideshow.SlideshowViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,13 +40,23 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.bikemonitor.databinding.ActivityMainBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.ChildEventListener;
 
 public class MainActivity extends AppCompatActivity {
     private class UserHandler extends Handler{
         private AppCompatActivity m_currentParentActivity;
+        private DatabaseReference mDatabase;
         private byte[] currentReceivedPayload = new byte[1024];
         private int receivedDLC = 0;
         private boolean payloadReceived = true;
+        // Obtain the DataContainerViewModel instance
+
+
         UserHandler(AppCompatActivity currentParentActivity){
             super();
             m_currentParentActivity = currentParentActivity;
@@ -222,13 +235,27 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("HandlerLeak")
     private final Handler mHandler = new UserHandler(this);
 
+
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DataContainer userInfoContainerViewModel = new ViewModelProvider(this).get(DataContainer.class);
+        // Observe changes in UserInfo MutableLiveData
+        userInfoContainerViewModel.getCurrentUserInfo().observe(this, new Observer<UserInfor>() {
+            @Override
+            public void onChanged(UserInfor userInfo) {
+                if (userInfo != null) {
+                    Log.i("Test", "email: " + userInfo.getUserEmail());
+                    // Data may be changed will be handled here to push into cloud
+                }
+            }
+        });
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         ///Background components Initialize
         ///1.Initialize ComComponent Object
@@ -244,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         ActionBar mainBar = getSupportActionBar();
 
+
         NavHostFragment hostFragment = (NavHostFragment)getSupportFragmentManager().findFragmentById(
                                         R.id.nav_host_fragment_content_main);
 
@@ -251,9 +279,35 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavigationUI.setupWithNavController(bottomNav , navController);
 
+        DataContainer m_dataChangeNotify = new ViewModelProvider(this).get(DataContainer.class);
+        m_dataChangeNotify.getDataChangeNotifier().observe(this,
+                new Observer<Boolean>(){
+                    @Override
+                    public void onChanged(Boolean status) {
+                        DatabaseReference m_ref = FirebaseDatabase.getInstance().getReference();
+                        String userID = m_dataChangeNotify.getCurrentUserInfo().getValue().getUserID();
+                        m_ref.child(userID).child("DevList").child("Willen").child("DeviceRegSts").setValue(m_dataChangeNotify.getCloudData().getDevRegSts());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DevAddr").setValue(m_dataChangeNotify.getCloudData().getDevAddr());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DevName").setValue(m_dataChangeNotify.getCloudData().getUserDevice());
+                        m_ref.child(userID).child("DevList").child("Willen").child("MonRec").setValue(m_dataChangeNotify.getCloudData().getMonRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DayRec").setValue(m_dataChangeNotify.getCloudData().getDayRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("HourRec").setValue(m_dataChangeNotify.getCloudData().getHourRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("MinRec").setValue(m_dataChangeNotify.getCloudData().getMinRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("Distance").setValue(m_dataChangeNotify.getCloudData().getUserDistance());
+                        m_ref.child(userID).child("DevList").child("Willen").child("ActivePeriod").setValue(m_dataChangeNotify.getCloudData().getActivePeriod());
+                        Log.i(" ", "CHANGED!");
+                    }
+        });
+
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+                if(navDestination.getId() == R.id.nav_login){
+                    m_dataChangeNotify.setLoginStatus(false);
+                }
+                else{
+                    m_dataChangeNotify.setLoginStatus(true);
+                }
                 if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)||
                         (navDestination.getId() == R.id.nav_devicelist) || (navDestination.getId() == R.id.nav_devicelistdiscover)){
                     bottomNav.setVisibility(View.GONE);
