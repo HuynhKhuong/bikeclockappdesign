@@ -41,10 +41,12 @@ public class LoginFragment extends Fragment {
 
     // userEmail, userPassword from firebase
     public String f_userEmail, f_userPassword;
-    public boolean f_devRegSts;
+    private Boolean f_devRegSts;
     public String f_devAddr;
     public String f_devName;
     private int logIn_status;
+    private double f_activePeriod;
+    private int f_distance,f_monRec,f_dayRec,f_hourRec,f_minRec;
 
     // Enumerate status of email, password
     final int e_niceInfo = 0;
@@ -62,7 +64,8 @@ public class LoginFragment extends Fragment {
 
     public interface FirebaseCallback {
         void onLoginStatusChanged(boolean loginStatus, String email, String password,
-                                  boolean devRegSts, String devAddr, String devName);
+                                  Boolean devRegSts, String devAddr, String devName,
+                                  double activePeriod, int mon, int day, int hour, int min, int distance);
     }
 
     private void VerifyDataWithFirebase(DatabaseReference dtbRef, String userID,
@@ -74,9 +77,15 @@ public class LoginFragment extends Fragment {
                 if(UserInfoContainerViewModel.getLoginStatus() == false){
                     f_userEmail = dataSnapshot.child(userID).child("Email").getValue(String.class);
                     f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
-                    f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(boolean.class);
+                    f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(Boolean.class);
                     f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
                     f_devName = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevName").getValue(String.class);
+                    f_activePeriod = dataSnapshot.child(userID).child("DevList").child("Willen").child("ActivePeriod").getValue(double.class);
+                    f_monRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("MonRec").getValue(int.class);
+                    f_dayRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("DayRec").getValue(int.class);
+                    f_hourRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("HourRec").getValue(int.class);
+                    f_minRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("MinRec").getValue(int.class);
+                    f_distance = dataSnapshot.child(userID).child("DevList").child("Willen").child("Distance").getValue(int.class);
 
                     if (!Objects.equals(userEmail, f_userEmail)){
                         alertAction(e_EmailNotRegistered);
@@ -89,7 +98,8 @@ public class LoginFragment extends Fragment {
                     else{
                         m_user.setLogInSts(true);
                     }
-                    callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr,f_devName);
+                    callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr,f_devName,
+                            f_activePeriod,f_monRec,f_dayRec,f_hourRec,f_minRec,f_distance);
                 }
             }
             @Override
@@ -197,55 +207,66 @@ public class LoginFragment extends Fragment {
 
 
         binding.cirLoginButton.setOnClickListener(
-        new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  binding.cirLoginButton.startAnimation();
-                  ///Some asynchronous task
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        binding.cirLoginButton.startAnimation();
+                        ///Some asynchronous task
 
-                  // get info from Textview
-                  String l_email = m_emailText.getText().toString();
-                  String l_password = m_passwordText.getText().toString();
-                  String l_userID;
-                  int l_validateInfo;
-                  // Validate email and password is valid
-                  l_validateInfo = ValidateUserInfo(l_email,l_password);
-                  if(l_validateInfo != e_niceInfo){
-                      alertAction(l_validateInfo);
-                  }
-                  else {
-                      // Get user Email and password from firebase to verify
-                      l_userID = l_email.split("@")[0];
-                      VerifyDataWithFirebase(m_Ref, l_userID, l_email, l_password, m_userInfo, new FirebaseCallback() {
-                          @Override
-                          public void onLoginStatusChanged(boolean loginStatus, String email, String password, boolean devRegSts, String devAddr, String devName) {
-                              if(loginStatus){
+                        // get info from Textview
+                        String l_email = m_emailText.getText().toString();
+                        String l_password = m_passwordText.getText().toString();
+                        String l_userID;
+                        int l_validateInfo;
+                        // Validate email and password is valid
+                        l_validateInfo = ValidateUserInfo(l_email,l_password);
+                        if(l_validateInfo != e_niceInfo){
+                            alertAction(l_validateInfo);
+                        }
+                        else {
+                            // Get user Email and password from firebase to verify
+                            l_userID = l_email.split("@")[0];
+                            VerifyDataWithFirebase(m_Ref, l_userID, l_email, l_password, m_userInfo, new FirebaseCallback() {
+                                @Override
+                                public void onLoginStatusChanged(boolean loginStatus, String email, String password, Boolean devRegSts, String devAddr, String devName,
+                                                                 double activePeriod, int mon, int day, int hour, int min, int distance) {
+                                    if(loginStatus){
+                                        // User infor set
+                                        m_userInfo.setUserEmail(email);
+                                        m_userInfo.setUserPassword(password);
+                                        m_userInfo.setUserID(email.split("@")[0]);
 
-                                  m_userInfo.setUserEmail(email);
-                                  m_userInfo.setUserPassword(password);
-                                  m_userInfo.setUserID(email.split("@")[0]);
-                                  m_recAttribute.setUserDevice(devName);
-                                  m_recAttribute.setDevRegSts(devRegSts);
-                                  m_recAttribute.setDevAddress(devAddr);
-                                  UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
-                                  DeviceInfoContainerViewModel.setCloudData(m_recAttribute);
-                                  DeviceInfoContainerViewModel.setLoginStatus(true);
-                                  Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
-                              }
-                              // Do something with the login status
-                              // For example, navigate to another screen
-                              // Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
-                              m_userInfo.setLogInSts(loginStatus);
-                          }
-                      });
-                  }
+                                        // Device attribute set
+                                        m_recAttribute.setUserDevice(devName);
+                                        m_recAttribute.setDevRegSts(devRegSts);
+                                        m_recAttribute.setDevAddress(devAddr);
+                                        m_recAttribute.setActivePeriod(activePeriod);
+                                        m_recAttribute.setMonRec(mon);
+                                        m_recAttribute.setDayRec(day);
+                                        m_recAttribute.setHourRec(hour);
+                                        m_recAttribute.setMinRec(min);
+                                        m_recAttribute.setUserDistance(distance);
 
-                  ///move to other state
-                  binding.cirLoginButton.revertAnimation();
+                                        // Data container set
+                                        UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
+                                        DeviceInfoContainerViewModel.setCloudData(m_recAttribute);
+                                        DeviceInfoContainerViewModel.setLoginStatus(true);
+                                        Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
+                                    }
+                                    // Do something with the login status
+                                    // For example, navigate to another screen
+                                    // Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
+                                    m_userInfo.setLogInSts(loginStatus);
+                                }
+                            });
+                        }
 
-                  //Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
-              }
-          }
+                        ///move to other state
+                        binding.cirLoginButton.revertAnimation();
+
+                        //Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
+                    }
+                }
         );
         binding.registertrigger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,3 +296,4 @@ public class LoginFragment extends Fragment {
         binding = null;
     }
 }
+
