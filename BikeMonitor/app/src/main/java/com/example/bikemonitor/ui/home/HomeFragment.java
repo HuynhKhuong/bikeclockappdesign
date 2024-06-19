@@ -132,6 +132,40 @@ public class HomeFragment extends Fragment {
             }
         }});
 
+        Button recordButtonPlay = binding.recorderStart;
+        Button recordButtonPause = binding.recorderStop;
+
+        recordButtonPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //user pressed pause recoding
+                homeViewModel.setRecorderStartFlag(false);
+            }
+        });
+
+        recordButtonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //user pressed play recording
+                homeViewModel.setRecorderStartFlag(true);
+            }
+        });
+
+        homeViewModel.getRecorderStartFlag().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    //recorder play
+                    recordButtonPause.setVisibility(View.VISIBLE);
+                    recordButtonPlay.setVisibility(View.GONE);
+                }
+                else{
+                    //recorder pause
+                    recordButtonPause.setVisibility(View.GONE);
+                    recordButtonPlay.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         OnBackPressedCallback backGesture = new customOnBackPressed();
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGesture);
 

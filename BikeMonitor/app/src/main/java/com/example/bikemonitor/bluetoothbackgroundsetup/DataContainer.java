@@ -10,11 +10,11 @@ public class DataContainer extends ViewModel {
     private MutableLiveData<UserInfor.RecordedAttribute> currentDeviceInfo = new MutableLiveData<UserInfor.RecordedAttribute>();
     private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
 
-    public void setReceivedPayload(UserInfor.RecordedAttribute receivedPayload) {
+    public void setCloudData(UserInfor.RecordedAttribute receivedPayload) {
         this.currentDeviceInfo.setValue(receivedPayload);
     }
 
-    public MutableLiveData<UserInfor.RecordedAttribute> getReceivedPayload() {
+    public MutableLiveData<UserInfor.RecordedAttribute> getCloudData() {
         return currentDeviceInfo;
     }
 
