@@ -2,6 +2,7 @@ package com.example.bikemonitor.ui.home;
 
 import android.bluetooth.BluetoothClass;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,8 +147,11 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
-                int timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
-                cloudPort.getCloudData().setActivePeriod(timeDuration);
+
+                double timeDuration = (timeStampOnClockPauseButton.getTimeInMillis() - startRecordTimeStamp)/(60*1000);
+
+                Log.d("", "Time = " + Double.toString(timeDuration));
+                cloudPort.getCloudData().setActivePeriod((int)timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
                         cloudPort.getCloudData().getUserDistance() -
@@ -166,7 +170,7 @@ public class HomeFragment extends Fragment {
                         DeviceConnectionStateManager.DEVICE_ACCEPTED){
                     //user pressed play recording
                     Calendar timeStampOnClickPlayButton = Calendar.getInstance();
-                    startRecordTimeStamp = timeStampOnClickPlayButton.get(Calendar.MINUTE);
+                    startRecordTimeStamp = timeStampOnClickPlayButton.getTimeInMillis();
                     cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
                     cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
                     cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
