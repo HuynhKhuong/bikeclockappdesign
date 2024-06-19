@@ -10,6 +10,8 @@ public class DataContainer extends ViewModel {
     private UserInfor.RecordedAttribute currentDeviceInfo = new UserInfor.RecordedAttribute();
     private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
     private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
+    private boolean isFirstStartup = true;
+    private boolean loginDone = false;
 
     public void setCloudData(UserInfor.RecordedAttribute receivedPayload) {
         this.currentDeviceInfo = receivedPayload;
@@ -20,8 +22,15 @@ public class DataContainer extends ViewModel {
     }
 
     public void notifyDataChange(){
-        boolean currentDummyStatus = dataChangeNotify.getValue();
-        dataChangeNotify.setValue(!currentDummyStatus);
+        if(isFirstStartup){
+            isFirstStartup = false;
+            dataChangeNotify.setValue(true);
+        }
+        else{
+            boolean currentDummyStatus = dataChangeNotify.getValue();
+            dataChangeNotify.setValue(!currentDummyStatus);
+        }
+
     }
 
     public MutableLiveData<Boolean> getDataChangeNotifier(){
@@ -34,5 +43,13 @@ public class DataContainer extends ViewModel {
 
     public MutableLiveData<UserInfor> getCurrentUserInfo() {
         return currentUserInfo;
+    }
+
+    public void setLoginStatus(boolean status){
+        loginDone = status;
+    }
+
+    public boolean getLoginStatus(){
+        return loginDone;
     }
 }

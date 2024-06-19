@@ -70,22 +70,24 @@ public class LoginFragment extends Fragment {
         dtbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                f_userEmail = dataSnapshot.child(userID).child("Email").getValue(String.class);
-                f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
-                f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(boolean.class);
-                f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
-                if (!Objects.equals(userEmail, f_userEmail)){
-                    alertAction(e_EmailNotRegistered);
-                    m_user.setLogInSts(false);
+                if(UserInfoContainerViewModel.getLoginStatus() == false){
+                    f_userEmail = dataSnapshot.child(userID).child("Email").getValue(String.class);
+                    f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
+                    f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(boolean.class);
+                    f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
+                    if (!Objects.equals(userEmail, f_userEmail)){
+                        alertAction(e_EmailNotRegistered);
+                        m_user.setLogInSts(false);
+                    }
+                    else if (!Objects.equals(userPassword, f_userPassword)){
+                        alertAction(e_WrongPassword);
+                        m_user.setLogInSts(false);
+                    }
+                    else{
+                        m_user.setLogInSts(true);
+                    }
+                    callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr);
                 }
-                else if (!Objects.equals(userPassword, f_userPassword)){
-                    alertAction(e_WrongPassword);
-                    m_user.setLogInSts(false);
-                }
-                else{
-                    m_user.setLogInSts(true);
-                }
-                callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -190,6 +192,8 @@ public class LoginFragment extends Fragment {
         UserInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
         DeviceInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
+        DeviceInfoContainerViewModel.setLoginStatus(false);
+
         binding.cirLoginButton.setOnClickListener(
         new View.OnClickListener() {
               @Override
@@ -223,7 +227,7 @@ public class LoginFragment extends Fragment {
                                   m_recAttribute.setDevAddress(devAddr);
                                   UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
                                   DeviceInfoContainerViewModel.setCloudData(m_recAttribute);
-
+                                  DeviceInfoContainerViewModel.setLoginStatus(true);
                                   Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_home);
                               }
                               // Do something with the login status
