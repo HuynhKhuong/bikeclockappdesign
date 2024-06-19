@@ -4,7 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -17,12 +20,32 @@ import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
 import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
+import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentGalleryBinding;
 import com.example.bikemonitor.databinding.LogoutButtonBinding;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
+
+    private ArrayList<String> m_reportsOptions = new ArrayList<String>(Arrays.asList(new String[]{}));
+    private ArrayAdapter<String> m_reportsOptionsArrayAdapter;
+
+    private final AdapterView.OnItemSelectedListener mOptionClickListener = new AdapterView.OnItemSelectedListener() {
+
+        public void onItemSelected(AdapterView<?> av, View v, int arg2, long arg3) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
     private class customOnBackPressed extends OnBackPressedCallback{
         customOnBackPressed(){
             super(true);
@@ -47,6 +70,21 @@ public class GalleryFragment extends Fragment {
         View root = binding.getRoot();
 
         ///Initialize!!!!
+
+        //Report list fill up
+        Spinner reportOptionList = binding.reportlistOptions;
+
+        final int Id = 5;
+        int currentIndx = 0;
+        while(currentIndx < Id){
+            m_reportsOptions.add("Record_" + Integer.toString(currentIndx));
+            currentIndx++;
+        }
+
+        m_reportsOptionsArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.option_name, m_reportsOptions);
+        reportOptionList.setAdapter(m_reportsOptionsArrayAdapter);
+        reportOptionList.setOnItemSelectedListener(mOptionClickListener);
+
         //Display delta Odo
         int deltaOdo = dataPort.getCloudData().getUserDistance();
         String displayString = "";
