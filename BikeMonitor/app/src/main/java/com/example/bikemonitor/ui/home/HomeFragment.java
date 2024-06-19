@@ -148,10 +148,10 @@ public class HomeFragment extends Fragment {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
 
-                double timeDuration = (timeStampOnClockPauseButton.getTimeInMillis() - startRecordTimeStamp)/(60*1000);
+                int timeDuration = ((int)timeStampOnClockPauseButton.getTimeInMillis()/1000 - startRecordTimeStamp)/(60);
 
                 Log.d("", "Time = " + Double.toString(timeDuration));
-                cloudPort.getCloudData().setActivePeriod((int)timeDuration);
+                cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
                         cloudPort.getCloudData().getUserDistance() -
@@ -170,7 +170,7 @@ public class HomeFragment extends Fragment {
                         DeviceConnectionStateManager.DEVICE_ACCEPTED){
                     //user pressed play recording
                     Calendar timeStampOnClickPlayButton = Calendar.getInstance();
-                    startRecordTimeStamp = timeStampOnClickPlayButton.getTimeInMillis();
+                    startRecordTimeStamp = (int)(timeStampOnClickPlayButton.getTimeInMillis()/1000);
                     cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
                     cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
                     cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));

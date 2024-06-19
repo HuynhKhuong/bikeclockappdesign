@@ -10,6 +10,7 @@ public class DataContainer extends ViewModel {
     private UserInfor.RecordedAttribute currentDeviceInfo = new UserInfor.RecordedAttribute();
     private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
     private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
+
     private boolean isFirstStartup = true;
     private boolean loginDone = false;
 
@@ -43,6 +44,18 @@ public class DataContainer extends ViewModel {
 
     public MutableLiveData<UserInfor> getCurrentUserInfo() {
         return currentUserInfo;
+    }
+    public void UpdateRequestedId(){
+        if(currentUserInfo.getValue().getIndex() < 5){
+            currentUserInfo.getValue().setIndex(currentUserInfo.getValue().getIndex() + 1);
+        }
+        else{
+            currentUserInfo.getValue().setIndex(0);
+        }
+    }
+
+    public int getCurrentRequestedId(){
+        return currentUserInfo.getValue().getIndex();
     }
 
     public void setLoginStatus(boolean status){

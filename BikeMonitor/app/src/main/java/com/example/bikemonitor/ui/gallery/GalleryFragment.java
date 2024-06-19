@@ -74,7 +74,7 @@ public class GalleryFragment extends Fragment {
         //Report list fill up
         Spinner reportOptionList = binding.reportlistOptions;
 
-        final int Id = 5;
+        final int Id = dataPort.getCurrentUserInfo().getValue().getIndex();
         int currentIndx = 0;
         while(currentIndx < Id){
             m_reportsOptions.add("Record_" + Integer.toString(currentIndx));

@@ -202,6 +202,7 @@ public class UserInfor {
         return m_logInSuccessSts;
     }
     public int getIndex() {return m_index;}
+    public void setIndex(int index){m_index = index;}
 
 
 }
