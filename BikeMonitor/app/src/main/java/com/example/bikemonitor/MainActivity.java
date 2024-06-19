@@ -279,12 +279,16 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         NavigationUI.setupWithNavController(bottomNav , navController);
 
-        DataContainer m_cloudContainer = new ViewModelProvider(this).get(DataContainer.class);
-        m_cloudContainer.getCurrentUserInfo().observe(this,
-                new Observer<UserInfor>(){
+        DataContainer m_dataChangeNotify = new ViewModelProvider(this).get(DataContainer.class);
+        m_dataChangeNotify.getDataChangeNotifier().observe(this,
+                new Observer<Boolean>(){
                     @Override
-                    public void onChanged(UserInfor userInfor) {
-
+                    public void onChanged(Boolean status) {
+                        DatabaseReference m_ref = FirebaseDatabase.getInstance().getReference();
+                        String userID = m_dataChangeNotify.getCurrentUserInfo().getValue().getUserID();
+                        m_ref.child(userID).child("DevList").child("Willen").child("DeviceRegSts").setValue(m_dataChangeNotify.getCloudData().getDevRegSts());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DevAddr").setValue(m_dataChangeNotify.getCloudData().getDevAddr());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DevName").setValue(m_dataChangeNotify.getCloudData().getUserDevice());
                         Log.i(" ", "CHANGED!");
                     }
         });

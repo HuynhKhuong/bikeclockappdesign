@@ -124,12 +124,14 @@ public class DeviceListFragment extends Fragment {
                     }
 
                     if(!m_devicesName.contains(s)){
+                        m_devicesName.clear();
                         m_devicesName.add(s);
 
                         ///Current workaround, other robust setter will be checked
                         m_cloudDataHandler.getCloudData().setUserDevice(m_ChosenDeviceNotifier.getDeviceInfo().getValue());
                         m_cloudDataHandler.getCloudData().setDevAddress(m_ChosenDeviceNotifier.getDeviceMac());
                         m_cloudDataHandler.getCloudData().setDevRegSts(true);
+                        m_cloudDataHandler.notifyDataChange();
                     }
 
                     mNewDevicesArrayAdapter.notifyDataSetChanged();
