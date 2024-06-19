@@ -6,17 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 
-import com.example.bikemonitor.R;
-import com.example.bikemonitor.combackground.ComComponent;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.databinding.FragmentHomeBinding;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
 
@@ -39,6 +39,8 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        DataContainer cloudPort =
+                new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -146,8 +148,17 @@ public class HomeFragment extends Fragment {
         recordButtonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //user pressed play recording
-                homeViewModel.setRecorderStartFlag(true);
+                if(DeviceConnectionStateManager.getDeviceConnectionStateManager().getCurrentState() ==
+                        DeviceConnectionStateManager.DEVICE_ACCEPTED){
+                    //user pressed play recording
+                    Calendar timeStampOnClickPlayButton = Calendar.getInstance();
+                    cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
+                    cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH));
+                    cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
+                    cloudPort.getCloudData().setMinRec(timeStampOnClickPlayButton.get(Calendar.MINUTE));
+                    cloudPort.notifyDataChange();
+                    homeViewModel.setRecorderStartFlag(true);
+                }
             }
         });
 
