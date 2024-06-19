@@ -43,6 +43,7 @@ public class LoginFragment extends Fragment {
     public String f_userEmail, f_userPassword;
     public boolean f_devRegSts;
     public String f_devAddr;
+    public String f_devName;
     private int logIn_status;
 
     // Enumerate status of email, password
@@ -61,7 +62,7 @@ public class LoginFragment extends Fragment {
 
     public interface FirebaseCallback {
         void onLoginStatusChanged(boolean loginStatus, String email, String password,
-                                  boolean devRegSts, String devAddr);
+                                  boolean devRegSts, String devAddr, String devName);
     }
 
     private void VerifyDataWithFirebase(DatabaseReference dtbRef, String userID,
@@ -75,6 +76,8 @@ public class LoginFragment extends Fragment {
                     f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
                     f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(boolean.class);
                     f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
+                    f_devName = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevName").getValue(String.class);
+
                     if (!Objects.equals(userEmail, f_userEmail)){
                         alertAction(e_EmailNotRegistered);
                         m_user.setLogInSts(false);
@@ -86,7 +89,7 @@ public class LoginFragment extends Fragment {
                     else{
                         m_user.setLogInSts(true);
                     }
-                    callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr);
+                    callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr,f_devName);
                 }
             }
             @Override
@@ -216,13 +219,13 @@ public class LoginFragment extends Fragment {
                       l_userID = l_email.split("@")[0];
                       VerifyDataWithFirebase(m_Ref, l_userID, l_email, l_password, m_userInfo, new FirebaseCallback() {
                           @Override
-                          public void onLoginStatusChanged(boolean loginStatus, String email, String password, boolean devRegSts, String devAddr) {
+                          public void onLoginStatusChanged(boolean loginStatus, String email, String password, boolean devRegSts, String devAddr, String devName) {
                               if(loginStatus){
 
                                   m_userInfo.setUserEmail(email);
                                   m_userInfo.setUserPassword(password);
                                   m_userInfo.setUserID(email.split("@")[0]);
-                                  m_recAttribute.setUserDevice(DeviceInfoContainerViewModel.getCloudData().getUserDevice());
+                                  m_recAttribute.setUserDevice(devName);
                                   m_recAttribute.setDevRegSts(devRegSts);
                                   m_recAttribute.setDevAddress(devAddr);
                                   UserInfoContainerViewModel.setCurrentUserInfo(m_userInfo);
