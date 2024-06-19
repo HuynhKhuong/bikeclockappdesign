@@ -216,15 +216,15 @@ public class RegisterFragment extends Fragment {
                         m_Ref.child(m_userID).child("Email").setValue(m_userEmail);
                         m_Ref.child(m_userID).child("Mobile").setValue(m_userMobileNo);
                         m_Ref.child(m_userID).child("Password").setValue(m_userPassword);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("DeviceRegSts").setValue(false);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("Distance").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("MinRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("HourRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("DayRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("MonRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("DevAddr").setValue("");
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("DevName").setValue("");
-                        m_Ref.child(m_userID).child("DevList").child("Report_0").child("ActivePeriod").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DeviceRegSts").setValue(false);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("Distance").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("MinRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("HourRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DayRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("MonRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DevAddr").setValue("");
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DevName").setValue("");
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("ActivePeriod").setValue(0);
                         alertAction(successfullyReg);
                     }
 
