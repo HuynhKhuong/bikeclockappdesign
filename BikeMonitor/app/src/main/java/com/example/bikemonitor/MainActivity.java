@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                         m_ref.child(userID).child("DevList").child("Willen").child("HourRec").setValue(m_dataChangeNotify.getCloudData().getHourRec());
                         m_ref.child(userID).child("DevList").child("Willen").child("MinRec").setValue(m_dataChangeNotify.getCloudData().getMinRec());
                         m_ref.child(userID).child("DevList").child("Willen").child("Distance").setValue(m_dataChangeNotify.getCloudData().getUserDistance());
-                        m_ref.child(userID).child("DevList").child("Willen").child("Distance").setValue(m_dataChangeNotify.getCloudData().getActivePeriod());
+                        m_ref.child(userID).child("DevList").child("Willen").child("ActivePeriod").setValue(m_dataChangeNotify.getCloudData().getActivePeriod());
                         Log.i(" ", "CHANGED!");
                     }
         });
@@ -302,6 +302,12 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+                if(navDestination.getId() == R.id.nav_login){
+                    m_dataChangeNotify.setLoginStatus(false);
+                }
+                else{
+                    m_dataChangeNotify.setLoginStatus(true);
+                }
                 if((navDestination.getId() == R.id.nav_login) || (navDestination.getId() == R.id.nav_register)||
                         (navDestination.getId() == R.id.nav_devicelist) || (navDestination.getId() == R.id.nav_devicelistdiscover)){
                     bottomNav.setVisibility(View.GONE);

@@ -11,7 +11,7 @@ public class UserInfor {
     // Recorded class for each user
     public static class RecordedAttribute{
         private int m_userDistance;
-        private int m_userAvrVelocity;
+        private double m_userAvrVelocity;
         private int m_userDateRecorded;
         private int m_userTimeRecorded;
         private String m_userDevice;
@@ -37,9 +37,18 @@ public class UserInfor {
             return m_userDistance;
         }
 
-        public int getUserAverageVelocity()
+        public void setUserDistance(int data)
+        {
+            m_userDistance = data;
+        }
+        public double getUserAverageVelocity()
         {
             return m_userAvrVelocity;
+        }
+
+        public void setUserAverageVelocity(double data)
+        {
+            m_userAvrVelocity = data;
         }
 
         public int getUserDateRecorded()

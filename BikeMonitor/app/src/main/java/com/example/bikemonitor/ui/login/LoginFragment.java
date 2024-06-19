@@ -195,7 +195,6 @@ public class LoginFragment extends Fragment {
         UserInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
         DeviceInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
-        DeviceInfoContainerViewModel.setLoginStatus(false);
 
         binding.cirLoginButton.setOnClickListener(
         new View.OnClickListener() {
