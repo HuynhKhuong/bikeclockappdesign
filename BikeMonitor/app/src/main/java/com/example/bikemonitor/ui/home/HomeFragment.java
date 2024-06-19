@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
         }
     }
     private FragmentHomeBinding binding;
-    private double startRecordTimeStamp;
+    private int startRecordTimeStamp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -146,7 +146,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
-                double timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
+                int timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
                 cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(

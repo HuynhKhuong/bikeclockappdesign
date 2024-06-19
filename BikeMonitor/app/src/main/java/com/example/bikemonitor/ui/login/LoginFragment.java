@@ -45,7 +45,7 @@ public class LoginFragment extends Fragment {
     public String f_devAddr;
     public String f_devName;
     private int logIn_status;
-    private double f_activePeriod;
+    private int f_activePeriod;
     private int f_distance,f_monRec,f_dayRec,f_hourRec,f_minRec;
 
     // Enumerate status of email, password
@@ -65,7 +65,7 @@ public class LoginFragment extends Fragment {
     public interface FirebaseCallback {
         void onLoginStatusChanged(boolean loginStatus, String email, String password,
                                   Boolean devRegSts, String devAddr, String devName,
-                                  double activePeriod, int mon, int day, int hour, int min, int distance);
+                                  int activePeriod, int mon, int day, int hour, int min, int distance);
     }
 
     private void VerifyDataWithFirebase(DatabaseReference dtbRef, String userID,
@@ -75,17 +75,20 @@ public class LoginFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(UserInfoContainerViewModel.getLoginStatus() == false){
+                    // To get index of current record version
+                    int l_index = UserInfoContainerViewModel.getCurrentUserInfo().getValue().getIndex();
+
                     f_userEmail = dataSnapshot.child(userID).child("Email").getValue(String.class);
                     f_userPassword = dataSnapshot.child(userID).child("Password").getValue(String.class);
-                    f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Willen").child("DeviceRegSts").getValue(Boolean.class);
-                    f_devAddr = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevAddr").getValue(String.class);
-                    f_devName = dataSnapshot.child(userID).child("DevList").child("Willen").child("DevName").getValue(String.class);
-                    f_activePeriod = dataSnapshot.child(userID).child("DevList").child("Willen").child("ActivePeriod").getValue(double.class);
-                    f_monRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("MonRec").getValue(int.class);
-                    f_dayRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("DayRec").getValue(int.class);
-                    f_hourRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("HourRec").getValue(int.class);
-                    f_minRec = dataSnapshot.child(userID).child("DevList").child("Willen").child("MinRec").getValue(int.class);
-                    f_distance = dataSnapshot.child(userID).child("DevList").child("Willen").child("Distance").getValue(int.class);
+                    f_devRegSts = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DeviceRegSts").getValue(Boolean.class);
+                    f_devAddr = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevAddr").getValue(String.class);
+                    f_devName = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevName").getValue(String.class);
+                    f_activePeriod = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("ActivePeriod").getValue(int.class);
+                    f_monRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MonRec").getValue(int.class);
+                    f_dayRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DayRec").getValue(int.class);
+                    f_hourRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("HourRec").getValue(int.class);
+                    f_minRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MinRec").getValue(int.class);
+                    f_distance = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("Distance").getValue(int.class);
 
                     if (!Objects.equals(userEmail, f_userEmail)){
                         alertAction(e_EmailNotRegistered);
@@ -229,7 +232,7 @@ public class LoginFragment extends Fragment {
                             VerifyDataWithFirebase(m_Ref, l_userID, l_email, l_password, m_userInfo, new FirebaseCallback() {
                                 @Override
                                 public void onLoginStatusChanged(boolean loginStatus, String email, String password, Boolean devRegSts, String devAddr, String devName,
-                                                                 double activePeriod, int mon, int day, int hour, int min, int distance) {
+                                                                 int activePeriod, int mon, int day, int hour, int min, int distance) {
                                     if(loginStatus){
                                         // User infor set
                                         m_userInfo.setUserEmail(email);

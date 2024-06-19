@@ -7,6 +7,7 @@ public class UserInfor {
     private String m_userPassword;
     private String m_userID;
     private boolean m_logInSuccessSts;
+    private int m_index;
 
     // Recorded class for each user
     public static class RecordedAttribute{
@@ -29,7 +30,7 @@ public class UserInfor {
 
         // Indicate device registered status
         private boolean m_DevRegisteredSts;
-        private double m_activePeriod;
+        private int m_activePeriod;
 
 
         public int getUserDistance()
@@ -92,7 +93,7 @@ public class UserInfor {
         }
 
         public boolean getDevRegSts(){return m_DevRegisteredSts;}
-        public double getActivePeriod(){return m_activePeriod;}
+        public int getActivePeriod(){return m_activePeriod;}
 
         public void setMinRec(int min){
             this.m_minRec = min;
@@ -116,7 +117,7 @@ public class UserInfor {
         public void setDevRegSts(boolean sts){
             this.m_DevRegisteredSts = sts;
         }
-        public void setActivePeriod(double deltatime){
+        public void setActivePeriod(int deltatime){
             this.m_activePeriod = deltatime;
         }
 
@@ -175,6 +176,9 @@ public class UserInfor {
         this.m_userPassword = user_password;
     }
 
+    public void SetIndex(int index){
+        this.m_index = index;
+    }
     public String getUserPassword()
     {
         return m_userPassword;
@@ -197,6 +201,7 @@ public class UserInfor {
     {
         return m_logInSuccessSts;
     }
+    public int getIndex() {return m_index;}
 
 
 }
