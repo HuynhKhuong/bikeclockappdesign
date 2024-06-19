@@ -289,6 +289,12 @@ public class MainActivity extends AppCompatActivity {
                         m_ref.child(userID).child("DevList").child("Willen").child("DeviceRegSts").setValue(m_dataChangeNotify.getCloudData().getDevRegSts());
                         m_ref.child(userID).child("DevList").child("Willen").child("DevAddr").setValue(m_dataChangeNotify.getCloudData().getDevAddr());
                         m_ref.child(userID).child("DevList").child("Willen").child("DevName").setValue(m_dataChangeNotify.getCloudData().getUserDevice());
+                        m_ref.child(userID).child("DevList").child("Willen").child("MonRec").setValue(m_dataChangeNotify.getCloudData().getMonRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("DayRec").setValue(m_dataChangeNotify.getCloudData().getDayRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("HourRec").setValue(m_dataChangeNotify.getCloudData().getHourRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("MinRec").setValue(m_dataChangeNotify.getCloudData().getMinRec());
+                        m_ref.child(userID).child("DevList").child("Willen").child("Distance").setValue(m_dataChangeNotify.getCloudData().getUserDistance());
+                        m_ref.child(userID).child("DevList").child("Willen").child("Distance").setValue(m_dataChangeNotify.getCloudData().getActivePeriod());
                         Log.i(" ", "CHANGED!");
                     }
         });
