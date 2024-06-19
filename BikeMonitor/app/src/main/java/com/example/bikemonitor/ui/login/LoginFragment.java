@@ -20,6 +20,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 // Firebase package
+import com.example.bikemonitor.ui.gallery.GalleryViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,8 +71,10 @@ public class LoginFragment extends Fragment {
 
     private void VerifyDataWithFirebase(DatabaseReference dtbRef, String userID,
                                         String userEmail, String userPassword,
-                                        UserInfor m_user, FirebaseCallback callback){
+                                        UserInfor m_user, FirebaseCallback callback,
+                                        AppCompatActivity userParentActivity){
         dtbRef.addValueEventListener(new ValueEventListener() {
+            AppCompatActivity parentActivity = userParentActivity;
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(UserInfoContainerViewModel.getLoginStatus() == false){
@@ -104,6 +107,64 @@ public class LoginFragment extends Fragment {
                     }
                     callback.onLoginStatusChanged(m_user.getLogInSts(),userEmail,userPassword,f_devRegSts,f_devAddr,f_devName,
                             f_activePeriod,f_monRec,f_dayRec,f_hourRec,f_minRec,f_distance, f_index);
+                }
+                else{ //request during activities
+
+
+                    int f_requestType = dataSnapshot.child(userID).child("RequestType").getValue(int.class);
+                    if(f_requestType != 0 && f_requestType != 1) {
+                        //do nothing
+                    }
+                    else {
+                        int l_distance, l_monRec, l_dayRec, l_hourRec, l_minRec, l_index, l_activePeriod;
+                        boolean l_devRegSts;
+                        String l_devAddr, l_devName;
+                        if (f_requestType == 0) {//to check later
+//                            l_index = dataSnapshot.child(userID).child("RecIndex").getValue(int.class);
+//                            l_devRegSts = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DeviceRegSts").getValue(Boolean.class);
+//                            l_devAddr = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevAddr").getValue(String.class);
+//                            l_devName = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevName").getValue(String.class);
+//                            l_activePeriod = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("ActivePeriod").getValue(int.class);
+//                            l_monRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MonRec").getValue(int.class);
+//                            l_dayRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DayRec").getValue(int.class);
+//                            l_hourRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("HourRec").getValue(int.class);
+//                            l_minRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MinRec").getValue(int.class);
+//                            l_distance = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("Distance").getValue(int.class);
+
+                        } else { //read history
+                            l_index = dataSnapshot.child(userID).child("RequestID").getValue(int.class);
+
+                            l_devRegSts = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DeviceRegSts").getValue(Boolean.class);
+                            l_devName = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevName").getValue(String.class);
+                            l_devAddr = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevAddr").getValue(String.class);
+                            l_activePeriod = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("ActivePeriod").getValue(int.class);
+                            l_monRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MonRec").getValue(int.class);
+                            l_dayRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DayRec").getValue(int.class);
+                            l_hourRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("HourRec").getValue(int.class);
+                            l_minRec = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MinRec").getValue(int.class);
+                            l_distance = dataSnapshot.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("Distance").getValue(int.class);
+
+                            DataContainer userInfoContainerViewModel = new ViewModelProvider(parentActivity).get(DataContainer.class);
+
+                            userInfoContainerViewModel.getCloudData().setUserDevice(l_devName);
+                            userInfoContainerViewModel.getCloudData().setDevRegSts(l_devRegSts);
+                            userInfoContainerViewModel.getCloudData().setDevAddress(l_devAddr);
+                            userInfoContainerViewModel.getCloudData().setActivePeriod(l_activePeriod);
+                            userInfoContainerViewModel.getCloudData().setMonRec(l_monRec);
+                            userInfoContainerViewModel.getCloudData().setDayRec(l_dayRec);
+                            userInfoContainerViewModel.getCloudData().setHourRec(l_hourRec);
+                            userInfoContainerViewModel.getCloudData().setMinRec(l_minRec);
+                            userInfoContainerViewModel.getCloudData().setUserDistance(l_distance);
+                            // Data container set
+
+                            GalleryViewModel galleryViewModel = new ViewModelProvider(parentActivity).get(GalleryViewModel.class);
+                            galleryViewModel.notifyDataChange();
+                        }
+
+
+
+                    }
+
                 }
             }
             @Override
@@ -263,7 +324,7 @@ public class LoginFragment extends Fragment {
                                     // Navigation.findNavController(binding.getRoot()).navigate(R.id.action_nav_login_to_nav_gallery);
                                     m_userInfo.setLogInSts(loginStatus);
                                 }
-                            });
+                            }, (AppCompatActivity) requireActivity());
                         }
 
                         ///move to other state

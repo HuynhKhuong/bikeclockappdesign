@@ -18,12 +18,14 @@ public class HomeViewModel extends ViewModel {
         m_addtionalTimeDisplay = new MutableLiveData<Integer>();
         m_recorderStartFlag = new MutableLiveData<Boolean>();
         m_recorderStartFlag.setValue(false);
+        startRecordTimeStamp = 0;
     }
 
     private final String[] m_displayUnit = new String[]{"km", "km", "km/h", "HH:MM", "km/h"};
     private String[] m_displayValue = new String[]{"0000", "0000", "0000", "00:00", "00"};
     private final String[] m_displayLegend = new String[]{"ODO: ", "TRIP: ","ASPD: ", "TIME: "};
 
+    public int startRecordTimeStamp;
     private int syncupCounter = 0;
     private final MutableLiveData<Integer> m_displayItem;
     private final MutableLiveData<Integer> m_mainSpeedDisplay;

@@ -36,7 +36,6 @@ public class HomeFragment extends Fragment {
         }
     }
     private FragmentHomeBinding binding;
-    private int startRecordTimeStamp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -148,15 +147,18 @@ public class HomeFragment extends Fragment {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
 
-                int timeDuration = ((int)timeStampOnClockPauseButton.getTimeInMillis()/1000 - startRecordTimeStamp)/(60);
-
-                Log.d("", "Time = " + Double.toString(timeDuration));
+                int timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - homeViewModel.startRecordTimeStamp;
+                Log.d("", "start time = " +  Integer.toString(homeViewModel.startRecordTimeStamp));
+                Log.d("", "end time = " +  Integer.toString(timeStampOnClockPauseButton.get(Calendar.MINUTE)));
+                Log.d("", "Time = " + Integer.toString(timeDuration));
                 cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
                         cloudPort.getCloudData().getUserDistance() -
                         homeViewModel.getAdditionalOdoDisplay().getValue());
 
+
+                cloudPort.request(0, 0);
                 cloudPort.notifyDataChange();
                 reportDisplayPort.notifyDataChange();
                 homeViewModel.setRecorderStartFlag(false);
@@ -170,15 +172,29 @@ public class HomeFragment extends Fragment {
                         DeviceConnectionStateManager.DEVICE_ACCEPTED){
                     //user pressed play recording
                     Calendar timeStampOnClickPlayButton = Calendar.getInstance();
-                    startRecordTimeStamp = (int)(timeStampOnClickPlayButton.getTimeInMillis()/1000);
+                    homeViewModel.startRecordTimeStamp = (int)(timeStampOnClickPlayButton.get(Calendar.MINUTE));
                     cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
                     cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
                     cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
                     cloudPort.getCloudData().setMinRec(timeStampOnClickPlayButton.get(Calendar.MINUTE));
 
                     cloudPort.getCloudData().setUserDistance(homeViewModel.getAdditionalOdoDisplay().getValue());
+
+                    cloudPort.request(0, 0);
+                    cloudPort.updateRequestedId();
                     cloudPort.notifyDataChange();
                     reportDisplayPort.notifyDataChange();
+                    Log.d(" ", "Index updated " +  cloudPort.getIndexNotifier().getValue().toString());
+
+                    Log.d(" ", "Day updated " +  Integer.toString(cloudPort.getCloudData().getDayRec()));
+
+                    Log.d(" ", "Mon updated " +  Integer.toString(cloudPort.getCloudData().getMonRec()));
+
+                    Log.d(" ", "Hour updated " +  Integer.toString(cloudPort.getCloudData().getHourRec()));
+
+                    Log.d(" ", "Min updated " +  Integer.toString(cloudPort.getCloudData().getMinRec()));
+                    Log.d(" ", "Index updated " +  cloudPort.getIndexNotifier().getValue().toString());
+                    Log.d("","Cloud Port updated");
                     homeViewModel.setRecorderStartFlag(true);
                 }
             }

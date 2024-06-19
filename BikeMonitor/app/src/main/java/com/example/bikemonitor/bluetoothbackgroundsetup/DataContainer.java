@@ -10,8 +10,12 @@ public class DataContainer extends ViewModel {
     private UserInfor.RecordedAttribute currentDeviceInfo = new UserInfor.RecordedAttribute();
     private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
     private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
+    private MutableLiveData<Integer> indexNotifier = new MutableLiveData<Integer>();
+    private MutableLiveData<Integer> requestNotifier = new MutableLiveData<Integer>();
+    private int requestData = 0;
 
     private boolean isFirstStartup = true;
+    private boolean firstIndexUpdate = true;
     private boolean loginDone = false;
 
     public void setCloudData(UserInfor.RecordedAttribute receivedPayload) {
@@ -45,17 +49,42 @@ public class DataContainer extends ViewModel {
     public MutableLiveData<UserInfor> getCurrentUserInfo() {
         return currentUserInfo;
     }
-    public void UpdateRequestedId(){
+
+
+    public void updateRequestedId(){
+        if(firstIndexUpdate && (currentUserInfo.getValue().getIndex() == 0)){
+            firstIndexUpdate = false;
+            currentUserInfo.getValue().setIndex(-1);
+        }
+
         if(currentUserInfo.getValue().getIndex() < 5){
             currentUserInfo.getValue().setIndex(currentUserInfo.getValue().getIndex() + 1);
         }
         else{
             currentUserInfo.getValue().setIndex(0);
         }
+
+        indexNotifier.setValue(currentUserInfo.getValue().getIndex());
+    }
+
+    public MutableLiveData<Integer> getIndexNotifier(){
+        return indexNotifier;
     }
 
     public int getCurrentRequestedId(){
         return currentUserInfo.getValue().getIndex();
+    }
+
+    public void request(int requestCode, int requestData){
+        this.requestData = requestData;
+        requestNotifier.setValue(requestCode);
+    }
+
+    public int getRequestData(){
+        return this.requestData;
+    }
+    public MutableLiveData<Integer> requestListener(){
+        return requestNotifier;
     }
 
     public void setLoginStatus(boolean status){

@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onChanged(Boolean status) {
                         DatabaseReference m_ref = FirebaseDatabase.getInstance().getReference();
                         String userID = m_dataChangeNotify.getCurrentUserInfo().getValue().getUserID();
-                        int l_index = m_dataChangeNotify.getCurrentUserInfo().getValue().getIndex();
+                        int l_index = m_dataChangeNotify.getCurrentRequestedId();
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DeviceRegSts").setValue(m_dataChangeNotify.getCloudData().getDevRegSts());
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevAddr").setValue(m_dataChangeNotify.getCloudData().getDevAddr());
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("DevName").setValue(m_dataChangeNotify.getCloudData().getUserDevice());
@@ -296,9 +296,21 @@ public class MainActivity extends AppCompatActivity {
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("MinRec").setValue(m_dataChangeNotify.getCloudData().getMinRec());
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("Distance").setValue(m_dataChangeNotify.getCloudData().getUserDistance());
                         m_ref.child(userID).child("DevList").child("Record_" + String.valueOf(l_index)).child("ActivePeriod").setValue(m_dataChangeNotify.getCloudData().getActivePeriod());
+                        m_ref.child(userID).child("RecIndex").setValue(m_dataChangeNotify.getCurrentRequestedId());
                         Log.i(" ", "CHANGED!");
                     }
         });
+
+        m_dataChangeNotify.requestListener().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                DatabaseReference m_ref = FirebaseDatabase.getInstance().getReference();
+                String userID = m_dataChangeNotify.getCurrentUserInfo().getValue().getUserID();
+                m_ref.child(userID).child("RequestType").setValue(integer);
+                m_ref.child(userID).child("RequestID").setValue(m_dataChangeNotify.getRequestData());
+            }
+        });
+
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override

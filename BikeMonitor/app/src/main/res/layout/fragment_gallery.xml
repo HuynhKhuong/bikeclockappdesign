@@ -54,6 +54,22 @@
          android:background="@color/white"
          android:layout_marginTop="10dp"/>
 
+     <com.google.android.material.button.MaterialButton
+         android:id="@+id/recorder_choose"
+         android:layout_width="25dp"
+         android:layout_height="25dp"
+         android:insetLeft="0dp"
+         android:insetTop="0dp"
+         android:insetRight="0dp"
+         android:insetBottom="0dp"
+         app:icon="@drawable/ic_menu"
+         app:iconSize="20dp"
+         android:paddingStart="3dp"
+         android:paddingEnd="0dp"
+         app:layout_constraintBottom_toBottomOf="@+id/reportlist_options"
+         app:layout_constraintStart_toEndOf="@+id/reportlist_options"
+         android:layout_marginLeft="10dp"/>
+
      <LinearLayout
          android:id="@+id/main_displaygroup"
          android:layout_width="match_parent"
