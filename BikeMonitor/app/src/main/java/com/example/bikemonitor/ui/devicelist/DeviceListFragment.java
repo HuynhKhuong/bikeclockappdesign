@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,8 @@ public class DeviceListFragment extends Fragment {
 
                 BluetoothDevice device = BluetoothConnectionSetup.getBluetoothConnectionSetup().getRemoteDevice(
                         address, binding.getRoot());
+
+                Log.d("", "Bluetooth connect attempts: " + address + " " + info);
                 if(device != null){
                     BluetoothConnectionSetup.getBluetoothConnectionSetup().connect(device, binding.getRoot());
                 }
@@ -86,18 +89,14 @@ public class DeviceListFragment extends Fragment {
         View root = binding.getRoot();
         TextView mScreenTitle = binding.screentitle;
 
-        mScreenTitle.setText("Devices Name");
-
-        mNewDevicesArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.device_name,m_devicesName);
-        ListView existingDevicesList = binding.existingDevices;
-
-        existingDevicesList.setAdapter(mNewDevicesArrayAdapter);
 
         m_ChosenDeviceNotifier = new ViewModelProvider(requireActivity()).get(DeviceListLiveViewModel.class);
         m_cloudDataHandler = new ViewModelProvider(requireActivity()).get(DataContainer.class);
 
+        mScreenTitle.setText("Devices Name");
+
         ///Evaluate data container to get device list
-        if(m_cloudDataHandler.getCloudData().getValue().getDevRegSts() == false){
+        if(m_cloudDataHandler.getCloudData().getDevRegSts() == false){
             //do nothing
             //keep default value, device list will get displayed as no device existing
         }
@@ -105,9 +104,14 @@ public class DeviceListFragment extends Fragment {
             //query data container
             final int dummyTitleIndex = 0;
             m_devicesName.remove(dummyTitleIndex);
-            m_devicesName.add(m_cloudDataHandler.getCloudData().getValue().getUserDevice() + "\n" +
-                                m_cloudDataHandler.getCloudData().getValue().getDevAddr());
+            m_devicesName.add(m_cloudDataHandler.getCloudData().getUserDevice() + "\n" +
+                    m_cloudDataHandler.getCloudData().getDevAddr());
         }
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.device_name,m_devicesName);
+        ListView existingDevicesList = binding.existingDevices;
+
+        existingDevicesList.setAdapter(mNewDevicesArrayAdapter);
+        existingDevicesList.setOnItemClickListener(mDeviceClickListener);
 
         m_ChosenDeviceNotifier.getDeviceInfo().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -123,9 +127,9 @@ public class DeviceListFragment extends Fragment {
                         m_devicesName.add(s);
 
                         ///Current workaround, other robust setter will be checked
-                        m_cloudDataHandler.getCloudData().getValue().setUserDevice(m_ChosenDeviceNotifier.getDeviceInfo().getValue());
-                        m_cloudDataHandler.getCloudData().getValue().setDevAddress(m_ChosenDeviceNotifier.getDeviceMac());
-                        m_cloudDataHandler.getCloudData().getValue().setDevRegSts(true);
+                        m_cloudDataHandler.getCloudData().setUserDevice(m_ChosenDeviceNotifier.getDeviceInfo().getValue());
+                        m_cloudDataHandler.getCloudData().setDevAddress(m_ChosenDeviceNotifier.getDeviceMac());
+                        m_cloudDataHandler.getCloudData().setDevRegSts(true);
                     }
 
                     mNewDevicesArrayAdapter.notifyDataSetChanged();

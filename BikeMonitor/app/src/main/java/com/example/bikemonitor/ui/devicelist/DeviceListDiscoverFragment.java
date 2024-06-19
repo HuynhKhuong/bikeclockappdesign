@@ -64,7 +64,7 @@ public class DeviceListDiscoverFragment extends Fragment {
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
-            m_deviceChosenNotify.setDeviceInfo(info);
+            m_deviceChosenNotify.setDeviceInfo(info.substring(0, info.length() - 18));
             m_deviceChosenNotify.setDeviceMac(address);
             m_deviceChosenNotify.set_hasUserSearchedNewDevice(true);
             NavHostFragment hostFragment = (NavHostFragment) requireActivity().getSupportFragmentManager().findFragmentById(

@@ -7,15 +7,25 @@ import com.example.bikemonitor.UserInfor;
 
 public class DataContainer extends ViewModel {
     final int g_payloadSize = 1024;
-    private MutableLiveData<UserInfor.RecordedAttribute> currentDeviceInfo = new MutableLiveData<UserInfor.RecordedAttribute>();
+    private UserInfor.RecordedAttribute currentDeviceInfo = new UserInfor.RecordedAttribute();
     private MutableLiveData<UserInfor> currentUserInfo = new MutableLiveData<UserInfor>();
+    private MutableLiveData<Boolean> dataChangeNotify = new MutableLiveData<Boolean>();
 
     public void setCloudData(UserInfor.RecordedAttribute receivedPayload) {
-        this.currentDeviceInfo.setValue(receivedPayload);
+        this.currentDeviceInfo = receivedPayload;
     }
 
-    public MutableLiveData<UserInfor.RecordedAttribute> getCloudData() {
+    public UserInfor.RecordedAttribute getCloudData() {
         return currentDeviceInfo;
+    }
+
+    public void notifyDataChange(){
+        boolean currentDummyStatus = dataChangeNotify.getValue();
+        dataChangeNotify.setValue(!currentDummyStatus);
+    }
+
+    public MutableLiveData<Boolean> getDataChangeNotifier(){
+        return dataChangeNotify;
     }
 
     public void setCurrentUserInfo(UserInfor userinfo) {
