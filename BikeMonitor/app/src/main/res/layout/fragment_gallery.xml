@@ -4,19 +4,238 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".ui.gallery.GalleryFragment">
 
      <TextView
-        android:id="@+id/text_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+         android:id="@+id/setting_screentitle"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textColor="@color/white"
+         android:textSize="25sp"
+         android:textStyle="normal|bold"
+         android:text="DEVICE REPORTS"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintTop_toTopOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="60dp"
+         tools:ignore="NotSibling">
+     </TextView>
+
+     <LinearLayout
+         android:id="@+id/horizontal_divider_1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toBottomOf="@+id/setting_screentitle"
+         android:layout_marginTop="10dp"
+         android:gravity="center"
+         android:weightSum="12">
+
+          <View
+              android:layout_width="0dp"
+              android:layout_height="1dp"
+              android:layout_weight="5"
+              android:background="@color/colorPrimary" />
+
+          <View
+              android:layout_width="0dp"
+              android:layout_height="1dp"
+              android:layout_weight="5"
+              android:background="@color/colorPrimary" />
+     </LinearLayout>
+
+     <LinearLayout
+         android:id="@+id/main_displaygroup"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toBottomOf="@id/horizontal_divider_1"
+         android:layout_marginTop="120dp"
+         android:gravity="center"
+         android:weightSum="40">
+
+          <androidx.legacy.widget.Space
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight= "5"/>
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/deltaOdo_layout"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="4">
+
+               <TextView
+                   android:id="@+id/deltaOdo_Legend"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Delta Odo"
+                   android:textColor="@color/white"
+                   android:textSize="20sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent"/>
+               <TextView
+                   android:id="@+id/deltaOdo_Value"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="20"
+                   android:textColor="@color/white"
+                   android:textSize="60sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintStart_toStartOf="@id/deltaOdo_Legend"
+                   app:layout_constraintTop_toBottomOf="@id/deltaOdo_Legend"/>
+
+               <TextView
+                   android:id="@+id/deltaOdo_Unit"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="km"
+                   android:textColor="@color/white"
+                   android:textSize="20sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintBottom_toBottomOf="@+id/deltaOdo_Value"
+                   app:layout_constraintStart_toEndOf="@+id/deltaOdo_Value"/>
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <androidx.legacy.widget.Space
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight= "2"/>
+
+          <View
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:background="@color/white" />
+
+          <androidx.legacy.widget.Space
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight= "5"/>
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/deltaTime_layout"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_weight="4">
+
+               <TextView
+                   android:id="@+id/deltaTime_Legend"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="Delta Time"
+                   android:textColor="@color/white"
+                   android:textSize="20sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent"/>
+
+               <TextView
+                   android:id="@+id/deltaTime_Value"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="20"
+                   android:textColor="@color/white"
+                   android:textSize="60sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintStart_toStartOf="@id/deltaTime_Legend"
+                   app:layout_constraintTop_toBottomOf="@id/deltaTime_Legend"/>
+               <TextView
+                   android:id="@+id/deltaTime_Unit"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/white"
+                   android:text="min"
+                   android:textSize="20sp"
+                   android:textStyle="normal|bold"
+                   app:layout_constraintStart_toEndOf="@+id/deltaTime_Value"
+                   app:layout_constraintBottom_toBottomOf="@+id/deltaTime_Value">
+               </TextView>
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+          <androidx.legacy.widget.Space
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:layout_weight= "5"/>
+     </LinearLayout>
+
+     <LinearLayout
+         android:id="@+id/horizontal_divider"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toBottomOf="@+id/main_displaygroup"
+         android:layout_marginTop="10dp"
+         android:gravity="center"
+         android:weightSum="12">
+
+          <View
+              android:layout_width="0dp"
+              android:layout_height="1dp"
+              android:layout_weight="5"
+              android:background="@color/colorPrimary" />
+
+          <View
+              android:layout_width="0dp"
+              android:layout_height="1dp"
+              android:layout_weight="5"
+              android:background="@color/colorPrimary" />
+     </LinearLayout>
+
+     <androidx.constraintlayout.widget.ConstraintLayout
+         android:id="@+id/timeStamp"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toBottomOf="@+id/horizontal_divider"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:layout_marginTop="40dp">
+
+          <TextView
+              android:id="@+id/timeStamp_Legend"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="Record Timestamp"
+              android:textColor="@color/white"
+              android:textSize="20sp"
+              android:textStyle="normal|bold"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintTop_toTopOf="parent"/>
+          <TextView
+              android:id="@+id/timeStamp_Value"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="20:00:00"
+              android:textColor="@color/white"
+              android:textSize="40sp"
+              android:textStyle="normal|bold"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/timeStamp_Legend"
+              android:layout_marginTop="5dp"/>
+          <TextView
+              android:id="@+id/timeStamp_Value1"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="20/06"
+              android:textColor="@color/white"
+              android:textSize="30sp"
+              android:textStyle="normal|bold"
+              app:layout_constraintStart_toStartOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintTop_toBottomOf="@id/timeStamp_Value"
+              android:layout_marginTop="5dp"/>
+     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--     <TextView-->
+<!--         android:id="@+id/deltaOdo_legend"-->
+<!--         android:layout_width="wrap_content"-->
+<!--         android:layout_height="wrap_content"-->
+<!--         android:textColor="@color/white"-->
+<!--         android:textSize="25sp"-->
+<!--         android:textStyle="normal|bold"-->
+<!--         app:layout_constraintStart_toStartOf="parent"-->
+<!--         app:layout_constraintTop_toTopOf="parent">-->
+<!--     </TextView>-->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

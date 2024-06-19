@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
@@ -18,6 +19,7 @@ import java.util.Calendar;
 import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.databinding.FragmentHomeBinding;
 import com.example.bikemonitor.statemachine.DeviceConnectionStateManager;
+import com.example.bikemonitor.ui.gallery.GalleryViewModel;
 
 public class HomeFragment extends Fragment {
 
@@ -41,6 +43,8 @@ public class HomeFragment extends Fragment {
                 new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         DataContainer cloudPort =
                 new ViewModelProvider(requireActivity()).get(DataContainer.class);
+        GalleryViewModel reportDisplayPort =
+                new ViewModelProvider(requireActivity()).get(GalleryViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -142,8 +146,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
-                double timeDuration = timeStampOnClockPauseButton.getTimeInMillis() - startRecordTimeStamp;
-                timeDuration  = timeDuration/1000;
+                double timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
                 cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
@@ -151,6 +154,7 @@ public class HomeFragment extends Fragment {
                         homeViewModel.getAdditionalOdoDisplay().getValue());
 
                 cloudPort.notifyDataChange();
+                reportDisplayPort.notifyDataChange();
                 homeViewModel.setRecorderStartFlag(false);
             }
         });
@@ -162,7 +166,7 @@ public class HomeFragment extends Fragment {
                         DeviceConnectionStateManager.DEVICE_ACCEPTED){
                     //user pressed play recording
                     Calendar timeStampOnClickPlayButton = Calendar.getInstance();
-                    startRecordTimeStamp = timeStampOnClickPlayButton.getTimeInMillis();
+                    startRecordTimeStamp = timeStampOnClickPlayButton.get(Calendar.MINUTE);
                     cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
                     cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
                     cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
@@ -170,6 +174,7 @@ public class HomeFragment extends Fragment {
 
                     cloudPort.getCloudData().setUserDistance(homeViewModel.getAdditionalOdoDisplay().getValue());
                     cloudPort.notifyDataChange();
+                    reportDisplayPort.notifyDataChange();
                     homeViewModel.setRecorderStartFlag(true);
                 }
             }
