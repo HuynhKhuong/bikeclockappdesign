@@ -21,7 +21,7 @@ public class HomeViewModel extends ViewModel {
         startRecordTimeStamp = 0;
     }
 
-    private final String[] m_displayUnit = new String[]{"km", "km", "km/h", "HH:MM", "km/h"};
+    private final String[] m_displayUnit = new String[]{"m", "m", "m/h", "HH:MM", "m/h"};
     private String[] m_displayValue = new String[]{"0000", "0000", "0000", "00:00", "00"};
     private final String[] m_displayLegend = new String[]{"ODO: ", "TRIP: ","ASPD: ", "TIME: "};
 
@@ -150,7 +150,7 @@ public class HomeViewModel extends ViewModel {
     public void setDisplayedCurrentSpeed(int value){
         String reportValue = "";
         if(value < 10){
-            reportValue = "000"+Integer.toString(value);
+            reportValue = "0"+Integer.toString(value);
         }
         else{
             reportValue = Integer.toString(value);
