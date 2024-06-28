@@ -128,6 +128,7 @@ public class DeviceListFragment extends Fragment {
                         m_devicesName.add(s);
 
                         ///Current workaround, other robust setter will be checked
+                        m_cloudDataHandler.request(0,0);
                         m_cloudDataHandler.getCloudData().setUserDevice(m_ChosenDeviceNotifier.getDeviceInfo().getValue());
                         m_cloudDataHandler.getCloudData().setDevAddress(m_ChosenDeviceNotifier.getDeviceMac());
                         m_cloudDataHandler.getCloudData().setDevRegSts(true);

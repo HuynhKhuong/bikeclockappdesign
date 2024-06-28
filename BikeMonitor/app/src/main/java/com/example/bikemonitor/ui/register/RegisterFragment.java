@@ -17,6 +17,8 @@ import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
+import com.example.bikemonitor.UserInfor;
+import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.databinding.FragmentRegisterBinding;
 import com.github.leandroborgesferreira.loadingbutton.customViews.CircularProgressButton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -29,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.ChildEventListener;
 
+import com.example.bikemonitor.UserInfor;
+
 public class RegisterFragment extends Fragment {
     private FragmentRegisterBinding binding;
 
@@ -39,12 +43,15 @@ public class RegisterFragment extends Fragment {
     private String m_userMobileNo;
     private String m_userPassword;
     private String m_userID;
+    private UserInfor m_userInfo;
 
     public static final int invalidEmail = 0;
     public static final int invalidPhoneNo = 1;
     public static final int EmailUsed = 2;
     public static final int emptyUser = 3;
     public static final int successfullyReg = 4;
+
+    private DataContainer UserInfoContainerViewModel;
 
     private void alertAction(int alertType)
     {
@@ -137,6 +144,9 @@ public class RegisterFragment extends Fragment {
 
         TextView backToLoginText = binding.registerBackloginTrigger;
 
+        m_userInfo = new UserInfor();
+        UserInfoContainerViewModel = new ViewModelProvider(requireActivity()).get(DataContainer.class);
+
         backToLoginText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +187,8 @@ public class RegisterFragment extends Fragment {
                 boolean l_emailIsUsed;
                 String l_currentUser;
 
+                m_userInfo = new UserInfor();
+
                 // get character before AT in email for user ID
                 m_userID = m_userEmail.split("@")[0];
 
@@ -204,15 +216,18 @@ public class RegisterFragment extends Fragment {
                         m_Ref.child(m_userID).child("Email").setValue(m_userEmail);
                         m_Ref.child(m_userID).child("Mobile").setValue(m_userMobileNo);
                         m_Ref.child(m_userID).child("Password").setValue(m_userPassword);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("DeviceRegSts").setValue(false);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("Distance").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("MinRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("HourRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("DayRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("MonRec").setValue(0);
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("DevAddr").setValue("");
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("DevName").setValue("");
-                        m_Ref.child(m_userID).child("DevList").child("Willen").child("ActivePeriod").setValue(0);
+                        m_Ref.child(m_userID).child("RecIndex").setValue(0);
+                        m_Ref.child(m_userID).child("RequestType").setValue(0);
+                        m_Ref.child(m_userID).child("RequestID").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DeviceRegSts").setValue(false);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("Distance").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("MinRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("HourRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DayRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("MonRec").setValue(0);
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DevAddr").setValue("");
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("DevName").setValue("");
+                        m_Ref.child(m_userID).child("DevList").child("Record_0").child("ActivePeriod").setValue(0);
                         alertAction(successfullyReg);
                     }
 

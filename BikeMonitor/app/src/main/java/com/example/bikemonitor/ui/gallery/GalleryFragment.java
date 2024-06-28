@@ -1,10 +1,14 @@
 package com.example.bikemonitor.ui.gallery;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
@@ -17,12 +21,33 @@ import androidx.navigation.Navigation;
 
 import com.example.bikemonitor.R;
 import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
+import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentGalleryBinding;
 import com.example.bikemonitor.databinding.LogoutButtonBinding;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GalleryFragment extends Fragment {
 
     private FragmentGalleryBinding binding;
+
+    private ArrayList<String> m_reportsOptions = new ArrayList<String>(Arrays.asList(new String[]{}));
+    private int m_chosenReportIndx = 0;
+    private ArrayAdapter<String> m_reportsOptionsArrayAdapter;
+
+    private final AdapterView.OnItemSelectedListener mOptionClickListener = new AdapterView.OnItemSelectedListener() {
+
+        public void onItemSelected(AdapterView<?> av, View v, int arg2, long arg3) {
+            m_chosenReportIndx = arg2;
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
     private class customOnBackPressed extends OnBackPressedCallback{
         customOnBackPressed(){
             super(true);
@@ -47,6 +72,27 @@ public class GalleryFragment extends Fragment {
         View root = binding.getRoot();
 
         ///Initialize!!!!
+
+        //Report list fill up
+        Spinner reportOptionList = binding.reportlistOptions;
+
+        final int Id = dataPort.getCurrentRequestedId();
+        int currentIndx = 0;
+        if(currentIndx == Id){
+            m_reportsOptions.add("Record_0");
+        }
+        else{
+            while(currentIndx <= Id){
+                m_reportsOptions.add("Record_" + Integer.toString(currentIndx));
+                currentIndx++;
+            }
+        }
+
+
+        m_reportsOptionsArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.option_name, m_reportsOptions);
+        reportOptionList.setAdapter(m_reportsOptionsArrayAdapter);
+        reportOptionList.setOnItemSelectedListener(mOptionClickListener);
+
         //Display delta Odo
         int deltaOdo = dataPort.getCloudData().getUserDistance();
         String displayString = "";
@@ -104,6 +150,22 @@ public class GalleryFragment extends Fragment {
             displayString += Integer.toString(timeStampMonth);
         }
         binding.timeStampValue1.setText(displayString);
+
+        dataPort.getIndexNotifier().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer aInteger) {
+                Log.d(" ", "Index updated");
+                int currentIndx = 0;
+                m_reportsOptions.clear();
+                while(currentIndx <= aInteger){
+                    m_reportsOptions.add("Record_" + Integer.toString(currentIndx));
+                    currentIndx++;
+                }
+
+                m_reportsOptionsArrayAdapter.notifyDataSetChanged();
+            }
+        });
+
         galleryViewModel.getDataChangeNotifier().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -170,6 +232,18 @@ public class GalleryFragment extends Fragment {
             }
         });
 
+        Button choosingButton = binding.recorderChoose;
+        choosingButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        DataContainer dataPort =
+                                new ViewModelProvider(requireActivity()).get(DataContainer.class);
+                        dataPort.request(1, m_chosenReportIndx);
+                    }
+                }
+        );
         //final TextView textView = binding.textGallery;
         //galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 

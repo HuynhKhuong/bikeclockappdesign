@@ -44,12 +44,38 @@
               android:background="@color/colorPrimary" />
      </LinearLayout>
 
+     <Spinner
+         android:id="@+id/reportlist_options"
+         android:layout_width="160dp"
+         android:layout_height="wrap_content"
+         app:layout_constraintTop_toBottomOf="@id/horizontal_divider_1"
+         app:layout_constraintStart_toStartOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         android:background="@color/white"
+         android:layout_marginTop="10dp"/>
+
+     <com.google.android.material.button.MaterialButton
+         android:id="@+id/recorder_choose"
+         android:layout_width="25dp"
+         android:layout_height="25dp"
+         android:insetLeft="0dp"
+         android:insetTop="0dp"
+         android:insetRight="0dp"
+         android:insetBottom="0dp"
+         app:icon="@drawable/ic_menu"
+         app:iconSize="20dp"
+         android:paddingStart="3dp"
+         android:paddingEnd="0dp"
+         app:layout_constraintBottom_toBottomOf="@+id/reportlist_options"
+         app:layout_constraintStart_toEndOf="@+id/reportlist_options"
+         android:layout_marginLeft="10dp"/>
+
      <LinearLayout
          android:id="@+id/main_displaygroup"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         app:layout_constraintTop_toBottomOf="@id/horizontal_divider_1"
-         android:layout_marginTop="120dp"
+         app:layout_constraintTop_toBottomOf="@id/reportlist_options"
+         android:layout_marginTop="100dp"
          android:gravity="center"
          android:weightSum="40">
 
@@ -68,7 +94,7 @@
                    android:id="@+id/deltaOdo_Legend"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="Delta Odo"
+                   android:text="Distance"
                    android:textColor="@color/white"
                    android:textSize="20sp"
                    android:textStyle="normal|bold"
@@ -123,7 +149,7 @@
                    android:id="@+id/deltaTime_Legend"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="Delta Time"
+                   android:text="Duration"
                    android:textColor="@color/white"
                    android:textSize="20sp"
                    android:textStyle="normal|bold"

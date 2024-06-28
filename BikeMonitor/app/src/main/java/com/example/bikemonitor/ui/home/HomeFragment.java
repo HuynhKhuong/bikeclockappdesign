@@ -2,6 +2,7 @@ package com.example.bikemonitor.ui.home;
 
 import android.bluetooth.BluetoothClass;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,6 @@ public class HomeFragment extends Fragment {
         }
     }
     private FragmentHomeBinding binding;
-    private double startRecordTimeStamp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -146,13 +146,19 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 //user pressed pause recoding
                 Calendar timeStampOnClockPauseButton = Calendar.getInstance();
-                double timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - startRecordTimeStamp;
+
+                int timeDuration = timeStampOnClockPauseButton.get(Calendar.MINUTE) - homeViewModel.startRecordTimeStamp;
+                Log.d("", "start time = " +  Integer.toString(homeViewModel.startRecordTimeStamp));
+                Log.d("", "end time = " +  Integer.toString(timeStampOnClockPauseButton.get(Calendar.MINUTE)));
+                Log.d("", "Time = " + Integer.toString(timeDuration));
                 cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
                         cloudPort.getCloudData().getUserDistance() -
                         homeViewModel.getAdditionalOdoDisplay().getValue());
 
+
+                cloudPort.request(0, 0);
                 cloudPort.notifyDataChange();
                 reportDisplayPort.notifyDataChange();
                 homeViewModel.setRecorderStartFlag(false);
@@ -166,15 +172,29 @@ public class HomeFragment extends Fragment {
                         DeviceConnectionStateManager.DEVICE_ACCEPTED){
                     //user pressed play recording
                     Calendar timeStampOnClickPlayButton = Calendar.getInstance();
-                    startRecordTimeStamp = timeStampOnClickPlayButton.get(Calendar.MINUTE);
+                    homeViewModel.startRecordTimeStamp = (int)(timeStampOnClickPlayButton.get(Calendar.MINUTE));
                     cloudPort.getCloudData().setDayRec(timeStampOnClickPlayButton.get(Calendar.DAY_OF_MONTH));
                     cloudPort.getCloudData().setMonRec(timeStampOnClickPlayButton.get(Calendar.MONTH) + 1);
                     cloudPort.getCloudData().setHourRec(timeStampOnClickPlayButton.get(Calendar.HOUR_OF_DAY));
                     cloudPort.getCloudData().setMinRec(timeStampOnClickPlayButton.get(Calendar.MINUTE));
 
                     cloudPort.getCloudData().setUserDistance(homeViewModel.getAdditionalOdoDisplay().getValue());
+
+                    cloudPort.request(0, 0);
+                    cloudPort.updateRequestedId();
                     cloudPort.notifyDataChange();
                     reportDisplayPort.notifyDataChange();
+                    Log.d(" ", "Index updated " +  cloudPort.getIndexNotifier().getValue().toString());
+
+                    Log.d(" ", "Day updated " +  Integer.toString(cloudPort.getCloudData().getDayRec()));
+
+                    Log.d(" ", "Mon updated " +  Integer.toString(cloudPort.getCloudData().getMonRec()));
+
+                    Log.d(" ", "Hour updated " +  Integer.toString(cloudPort.getCloudData().getHourRec()));
+
+                    Log.d(" ", "Min updated " +  Integer.toString(cloudPort.getCloudData().getMinRec()));
+                    Log.d(" ", "Index updated " +  cloudPort.getIndexNotifier().getValue().toString());
+                    Log.d("","Cloud Port updated");
                     homeViewModel.setRecorderStartFlag(true);
                 }
             }
