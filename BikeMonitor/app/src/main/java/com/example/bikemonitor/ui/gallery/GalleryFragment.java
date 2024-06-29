@@ -24,6 +24,7 @@ import com.example.bikemonitor.bluetoothbackgroundsetup.DataContainer;
 import com.example.bikemonitor.combackground.ComComponent;
 import com.example.bikemonitor.databinding.FragmentGalleryBinding;
 import com.example.bikemonitor.databinding.LogoutButtonBinding;
+import com.example.bikemonitor.ui.home.HomeViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,6 +68,8 @@ public class GalleryFragment extends Fragment {
 
         DataContainer dataPort =
                 new ViewModelProvider(requireActivity()).get(DataContainer.class);
+        HomeViewModel recordInProgress =
+                new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
         binding = FragmentGalleryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -240,7 +243,12 @@ public class GalleryFragment extends Fragment {
 
                         DataContainer dataPort =
                                 new ViewModelProvider(requireActivity()).get(DataContainer.class);
-                        dataPort.request(1, m_chosenReportIndx);
+                        if(recordInProgress.getRecorderStartFlag().getValue()){
+                            //If record is in progress, no loading
+                            return ;
+                        }
+
+                        dataPort.request(1,m_chosenReportIndx);
                     }
                 }
         );

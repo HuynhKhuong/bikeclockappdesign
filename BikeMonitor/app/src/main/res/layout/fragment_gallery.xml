@@ -115,7 +115,7 @@
                    android:id="@+id/deltaOdo_Unit"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:text="km"
+                   android:text="m"
                    android:textColor="@color/white"
                    android:textSize="20sp"
                    android:textStyle="normal|bold"

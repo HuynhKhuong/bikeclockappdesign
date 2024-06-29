@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                     numberOfRequests = 0;
                     currentNumberOfRequest = 0;
                     sendConfigAttempt = true;
-                    ComComponent.getComComponent().cleanServiceQueue();
+                    ComComponent.getComComponent().cleanComService();
                     break;
 
                 case DeviceConnectionStateManager.DEVICE_ACCEPTED:
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     numberOfRequests = 0;
                     currentNumberOfRequest = 0;
                     sendConfigAttempt = true;
-                    ComComponent.getComComponent().cleanServiceQueue();
+                    ComComponent.getComComponent().cleanComService();
                     ComComponent.getComComponent().initiateConnectWithoutKey();
                     ComComponent.getComComponent().sendRawPayload();
                     break;

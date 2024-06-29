@@ -330,6 +330,11 @@ public class ComComponent {
 
     }
 
+    public void cleanComService(){
+        cleanServiceQueue();
+        resetDisplayPort();
+    }
+
     public void cleanServiceQueue(){
         if(!writingQueue.isEmpty()){
             writingQueue.clear();
@@ -355,6 +360,17 @@ public class ComComponent {
         }
         BluetoothConnectionSetup.getBluetoothConnectionSetup().write(writingQueue.poll());
     }
+
+    private void resetDisplayPort(){
+        m_displayPort.setLockIndicator(true);
+        m_displayPort.setDisplayedOdo(0);
+        m_displayPort.setDisplayedTime(0);
+        m_displayPort.setDisplayedTrip(0);
+        m_displayPort.setDisplayedAvdSpd(0);
+        m_displayPort.setDisplayedCurrentSpeed(0);
+        m_displayPort.setRecorderStartFlag(false);
+    }
+
     private byte[] m_receivedRawPayload;
 
     private Queue<String> writingQueue = new LinkedList<String>();

@@ -154,8 +154,8 @@ public class HomeFragment extends Fragment {
                 cloudPort.getCloudData().setActivePeriod(timeDuration);
 
                 cloudPort.getCloudData().setUserDistance(
-                        cloudPort.getCloudData().getUserDistance() -
-                        homeViewModel.getAdditionalOdoDisplay().getValue());
+                        homeViewModel.getAdditionalOdoDisplay().getValue() - 
+                        cloudPort.getCloudData().getUserDistance());
 
 
                 cloudPort.request(0, 0);
